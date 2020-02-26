@@ -1,20 +1,20 @@
 package miklos.mayer;
 
-public class ShopItem {
+public class Product {
 
-    private final String id;
+    private final int id;
 
     private String name;
 
     private float cost;
 
-    public ShopItem(String id, String name, float cost) {
+    public Product(int id, String name, float cost) {
         this.id = id;
         this.name = name;
         this.cost = cost;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 

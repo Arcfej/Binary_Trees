@@ -7,6 +7,12 @@ public class Menu {
 
     private static final String LINE_SEPARATOR = "-----------------------";
 
+    private BinaryTree<Integer> tree;
+
+    public Menu() {
+        tree = new BinaryTree<>();
+    }
+
     public static void main(String[] args) {
         Menu menu = new Menu();
         menu.displayMenu();
@@ -33,11 +39,12 @@ public class Menu {
     }
 
     private void addProduct(Scanner in) {
-        String id = getTextInput(in,
+        int id = getIntInput(in,
                 "Please enter an ID for the new product:",
-                "",
-                String::isBlank
+                "The Catalogue has already contains a Product with this ID, or you have not entered a whole number for the new ID.",
+                integer -> tree.contains(integer)
         );
+
         String name = getTextInput(in,
                 "Please enter the name of the product:",
                 "",
@@ -48,7 +55,7 @@ public class Menu {
                 "Please enter a valid amount",
                 aFloat -> aFloat >= 0
         );
-        ShopItem product = new ShopItem(id, name, cost);
+        Product product = new Product(id, name, cost);
         // TODO add tree node
     }
 
@@ -72,6 +79,25 @@ public class Menu {
             System.out.println(question);
             try {
                 input = Float.parseFloat(in.nextLine());
+            } catch (NumberFormatException ignored) {
+                System.out.println(errorMessage);
+                continue;
+            }
+            if (validation.test(input)) {
+                break;
+            } else {
+                System.out.println(errorMessage);
+            }
+        }
+        return input;
+    }
+
+    private int getIntInput(Scanner in, String question, String errorMessage, Predicate<Integer> validation) {
+        int input;
+        while (true) {
+            System.out.println(question);
+            try {
+                input = Integer.parseInt(in.nextLine());
             } catch (NumberFormatException ignored) {
                 System.out.println(errorMessage);
                 continue;
