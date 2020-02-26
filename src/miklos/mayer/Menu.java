@@ -7,7 +7,7 @@ public class Menu {
 
     private static final String LINE_SEPARATOR = "-----------------------";
 
-    private BinaryTree<Integer> tree;
+    private BinaryTree<Product> tree;
 
     public Menu() {
         tree = new BinaryTree<>();
@@ -41,14 +41,14 @@ public class Menu {
     private void addProduct(Scanner in) {
         int id = getIntInput(in,
                 "Please enter an ID for the new product:",
-                "The Catalogue has already contains a Product with this ID, or you have not entered a whole number for the new ID.",
-                integer -> tree.contains(integer)
+                "You have not entered a whole number for the new ID.",
+                integer -> integer > 0
         );
 
         String name = getTextInput(in,
                 "Please enter the name of the product:",
                 "",
-                String::isBlank
+                s -> !s.isBlank()
         );
         float cost = getFloatInput(in,
                 "Please enter the cost of the product:",

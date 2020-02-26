@@ -1,8 +1,9 @@
 package miklos.mayer;
 
-public class TreeNode <E> {
+public class TreeNode <E extends Comparable> {
 
     private E data;
+    private TreeNode<E> parent;
     private TreeNode<E> left;
     private TreeNode<E> right;
 
@@ -16,6 +17,14 @@ public class TreeNode <E> {
 
     public void setData(E data) {
         this.data = data;
+    }
+
+    public TreeNode<E> getParent() {
+        return parent;
+    }
+
+    public void setParent(TreeNode<E> parent) {
+        this.parent = parent;
     }
 
     public TreeNode<E> getLeft() {
