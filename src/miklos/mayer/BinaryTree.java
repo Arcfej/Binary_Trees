@@ -11,8 +11,8 @@ public class BinaryTree<E extends Comparable<E>> {
         root = null;
     }
 
-    public Node<E> getRoot() {
-        return root;
+    public E getRoot() {
+        return root.getData();
     }
 
     public boolean contains(E data) {
@@ -20,6 +20,10 @@ public class BinaryTree<E extends Comparable<E>> {
     }
 
     public void add(E data) throws DuplicateItemException {
+        if (root == null) {
+            root = new Node<>(data, null);
+            return;
+        }
         Node<E> current = root;
         Node<E> parent = null;
         int direction = 0;
