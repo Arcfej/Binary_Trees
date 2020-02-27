@@ -61,4 +61,18 @@ public class Product implements Comparable<Product> {
     public int compareTo(Product otherProduct) {
         return Integer.compare(this.id, otherProduct.getId());
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        try {
+            obj = (Product) obj;
+        } catch (ClassCastException e) {
+            return false;
+        }
+        if (id != ((Product) obj).getId() || !name.equals(((Product) obj).getName()) || cost != ((Product) obj).getCost() || stock != ((Product) obj).getStock()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

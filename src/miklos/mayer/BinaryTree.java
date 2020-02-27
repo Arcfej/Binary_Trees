@@ -42,6 +42,7 @@ public class BinaryTree<E extends Comparable<E>> {
     public void add(E data) throws DuplicateItemException {
         if (root == null) {
             root = new Node<>(data, null);
+            size++;
             return;
         }
         Node<E> current = root;
@@ -87,6 +88,9 @@ public class BinaryTree<E extends Comparable<E>> {
     }
 
     private List<E> recursiveInOrder(List<E> list, Node<E> node) {
+        if (node == null) {
+            return list;
+        }
         if (node.getLeft() != null) {
             recursiveInOrder(list, node.getLeft());
         }

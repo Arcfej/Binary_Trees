@@ -19,12 +19,12 @@ public class Menu {
         menu.displayMenu();
     }
 
-    private void displayMenu() {
+    public void displayMenu() {
+        Scanner in = new Scanner(System.in);
         while (true) {
             System.out.println("1) Add a new product to your shop");
             System.out.println("2) Print shop catalogue");
             System.out.println("0) Exit");
-            Scanner in = new Scanner(System.in);
 
             switch (in.nextLine()) {
                 case "0":
@@ -128,5 +128,9 @@ public class Menu {
             }
         }
         return input;
+    }
+
+    public Shop getShop() {
+        return shop;
     }
 }
