@@ -1,5 +1,7 @@
 package miklos.mayer;
 
+import java.util.function.Predicate;
+
 public class Product implements Comparable<Product> {
 
     private final int id;
@@ -10,10 +12,15 @@ public class Product implements Comparable<Product> {
 
     private int stock;
 
-    public Product(int id, String name, float cost) {
+    public Product(int id) {
+        this(id, "", 0, 0);
+    }
+
+    public Product(int id, String name, float cost, int quantity) {
         this.id = id;
         this.name = name;
         this.cost = cost;
+        this.stock = quantity;
     }
 
     public int getId() {
@@ -36,13 +43,18 @@ public class Product implements Comparable<Product> {
         this.cost = cost;
     }
 
+    public int increaseStock(int quantity) {
+        this.stock += quantity;
+        return this.stock;
+    }
+
     public int decreaseStock(int quantity) {
         this.stock -= quantity;
         return this.stock;
     }
 
-    public void increaseStock(int quantity) {
-        this.stock += quantity;
+    public int getStock() {
+        return stock;
     }
 
     @Override
