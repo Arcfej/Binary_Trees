@@ -128,4 +128,77 @@ class MenuTest {
         );
     }
 
+    @Test
+    @Order(5)
+    void testInvalidInput() {
+        String input = "10\ngg\n\n1\ngg\n-1\n8.5\n111\n \n\ntest\n-5.8\nhhh\n5.8\n-5\njjj\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        out.reset();
+        try {
+            menu.displayMenu();
+        } catch (Exception ignored) { }
+        assertEquals(("1) Add a new product to your shop\n" +
+                        "2) Print shop catalogue\n" +
+                        "0) Exit\n" +
+                        "Not a valid command!\n" +
+                        "-----------------------\n" +
+                        "1) Add a new product to your shop\n" +
+                        "2) Print shop catalogue\n" +
+                        "0) Exit\n" +
+                        "Not a valid command!\n" +
+                        "-----------------------\n" +
+                        "1) Add a new product to your shop\n" +
+                        "2) Print shop catalogue\n" +
+                        "0) Exit\n" +
+                        "Not a valid command!\n" +
+                        "-----------------------\n" +
+                        "1) Add a new product to your shop\n" +
+                        "2) Print shop catalogue\n" +
+                        "0) Exit\n" +
+                        "Please enter an ID for the new product:\n" +
+                        "You have not entered a whole number for the new ID or the shop already has a product with the ID.\n" +
+                        "Please enter an ID for the new product:\n" +
+                        "You have not entered a whole number for the new ID or the shop already has a product with the ID.\n" +
+                        "Please enter an ID for the new product:\n" +
+                        "You have not entered a whole number for the new ID or the shop already has a product with the ID.\n" +
+                        "Please enter an ID for the new product:\n" +
+                        "Please enter the name of the product:\n" +
+                        "\n" +
+                        "Please enter the name of the product:\n" +
+                        "\n" +
+                        "Please enter the name of the product:\n" +
+                        "Please enter the cost of the product:\n" +
+                        "Please enter a valid amount\n" +
+                        "Please enter the cost of the product:\n" +
+                        "Please enter a valid amount\n" +
+                        "Please enter the cost of the product:\n" +
+                        "Please enter the initial quantity of the product:\n" +
+                        "Please enter a not negative, whole number!\n" +
+                        "Please enter the initial quantity of the product:\n" +
+                        "Please enter a not negative, whole number!\n" +
+                        "Please enter the initial quantity of the product:\n"
+                ).replaceAll("\\n|\\r\\n", System.lineSeparator()),
+                out.toString().replaceAll("\\n|\\r\\n", System.lineSeparator())
+        );
+    }
+
+    @Test
+    @Order(6)
+    void testDuplicateProduct() {
+        String input = "1\n1\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        out.reset();
+        try {
+            menu.displayMenu();
+        } catch (Exception ignored) { }
+        assertEquals(("1) Add a new product to your shop\n" +
+                        "2) Print shop catalogue\n" +
+                        "0) Exit\n" +
+                        "Please enter an ID for the new product:\n" +
+                        "You have not entered a whole number for the new ID or the shop already has a product with the ID.\n" +
+                        "Please enter an ID for the new product:\n"
+                ).replaceAll("\\n|\\r\\n", System.lineSeparator()),
+                out.toString().replaceAll("\\n|\\r\\n", System.lineSeparator())
+        );
+    }
 }
