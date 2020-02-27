@@ -1,5 +1,6 @@
 package miklos.mayer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -7,8 +8,11 @@ public class BinaryTree<E extends Comparable<E>> {
 
     private Node<E> root;
 
+    private int size;
+
     public BinaryTree() {
         root = null;
+        size = 0;
     }
 
     public E getRoot() {
@@ -29,23 +33,24 @@ public class BinaryTree<E extends Comparable<E>> {
         int direction = 0;
         // Find a place for the new data
         while (current != null) {
-            direction = current.getData().compareTo(data);
+            direction = data.compareTo(current.getData());
             parent = current;
-            if (direction < 0) {
+            if (direction < 0) { // If the new data smaller than current go left
                 current = current.getLeft();
-            } else if (direction > 0) {
+            } else if (direction > 0) { // If bigger, go right
                 current = current.getRight();
-            } else {
+            } else { // If equal, throw exception
                 throw new DuplicateItemException("The data is already in the tree.");
             }
         }
-        // Add the new data
+        // Add the new data to the empty space based on direction
         current = new Node<>(data, parent);
         if (direction < 0) {
             parent.setLeft(current);
-        } else if (direction > 0) {
+        } else {
             parent.setRight(current);
         }
+        size++;
     }
 
     public E find(Predicate<E> predicate) {
@@ -61,7 +66,19 @@ public class BinaryTree<E extends Comparable<E>> {
     }
 
     public List<E> traverseInOrder() {
-        return null;
+        List<E> list = new ArrayList<>(size);
+        return recursiveInOrder(list, root);
+    }
+
+    private List<E> recursiveInOrder(List<E> list, Node<E> node) {
+        if (node.getLeft() != null) {
+            recursiveInOrder(list, node.getLeft());
+        }
+        list.add(node.getData());
+        if (node.getRight() != null) {
+            recursiveInOrder(list, node.getRight());
+        }
+        return list;
     }
 
     public List<E> traversePreOrder() {
