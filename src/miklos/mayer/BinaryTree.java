@@ -20,7 +20,23 @@ public class BinaryTree<E extends Comparable<E>> {
     }
 
     public boolean contains(E data) {
-        return false;
+        return recursiveContains(root, data);
+    }
+
+    private boolean recursiveContains(Node<E> node, E data) {
+        if (node == null) {
+            return false; // Node null, node not equals data
+        }
+        if (node.getData().compareTo(data) == 0) {
+            return true; // Node equals data
+        }
+        if (recursiveContains(node.getRight(), data)) {
+            return true; // Return true if right subtree contains data
+        }
+        if (recursiveContains(node.getLeft(), data)) {
+            return true; // Return true if left subtree contains data
+        }
+        return false; // return false if neither subtree contains data
     }
 
     public void add(E data) throws DuplicateItemException {

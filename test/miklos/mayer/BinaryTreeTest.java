@@ -3,7 +3,6 @@ package miklos.mayer;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -48,5 +47,19 @@ class BinaryTreeTest {
     @Order(3)
     void addDuplicateItem() {
         assertThrows(DuplicateItemException.class, () -> tree.add(8));
+    }
+
+    @Test
+    @Order(4)
+    void testContainsMethod() {
+        assertTrue(tree.contains(1));
+        assertTrue(tree.contains(4));
+        assertTrue(tree.contains(5));
+        assertTrue(tree.contains(6));
+        assertTrue(tree.contains(8));
+        assertTrue(tree.contains(10));
+        assertFalse(tree.contains(0));
+        assertFalse(tree.contains(11));
+        assertFalse(tree.contains(555));
     }
 }
