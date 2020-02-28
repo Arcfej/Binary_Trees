@@ -1,12 +1,13 @@
 package miklos.mayer;
 
+import java.io.*;
 import java.util.List;
 import java.util.Scanner;
 import java.util.function.Predicate;
 
 public class Menu {
 
-    public static final String LINE_SEPARATOR = "-----------------------";
+    public static final String LINE_SEPARATOR = "-------------------------------------";
     public static final String MENU = "1) Add a new product to your shop\n" +
             "2) Print shop catalogue\n" +
             "3) Find product\n" +
@@ -17,6 +18,7 @@ public class Menu {
 
     public Menu() {
         shop = new Shop();
+        restoreCatalogue();
     }
 
     public static void main(String[] args) {
@@ -33,11 +35,13 @@ public class Menu {
                 case "0":
                     System.out.println("Goodbye!");
                     System.exit(1);
+                    saveCatalogue();
                 case "1":
                     addProduct(in);
+                    saveCatalogue();
                     break;
                 case "2":
-                    List<Product> productList = shop.getCatalogue();
+                    List<Product> productList = shop.getOrderedCatalogue();
                     printCatalogue(productList);
                     break;
                 case "3":
@@ -163,5 +167,31 @@ public class Menu {
 
     public Shop getShop() {
         return shop;
+    }
+
+    private void saveCatalogue() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter("shop.txt"))) {
+            for (Product product : shop.getCatalogueForSave()) {
+                writer.println(product.getId() + "," + product.getName() + "," + product.getCost() + "," + product.getStock());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void restoreCatalogue() {
+        try (Scanner scanner = new Scanner(new File("shop.txt"))) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] data = line.split(",");
+                shop.addNewProduct(Integer.parseInt(data[0]), data[1], Float.parseFloat(data[2]), Integer.parseInt(data[3]));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void resetShop() {
+        shop = new Shop();
     }
 }

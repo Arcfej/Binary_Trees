@@ -10,8 +10,12 @@ public class Shop {
         this.catalogue = new BinaryTree<>();
     }
 
-    public List<Product> getCatalogue() {
+    public List<Product> getOrderedCatalogue() {
         return catalogue.traverseInOrder();
+    }
+
+    public List<Product> getCatalogueForSave() {
+        return catalogue.traversePreOrder();
     }
 
     public void addNewProduct(int id, String name, float price, int quantity) throws IllegalArgumentException {
@@ -42,7 +46,7 @@ public class Shop {
     }
 
     public float getTotalCost() {
-        List<Product> products = getCatalogue();
+        List<Product> products = getOrderedCatalogue();
         float total = 0;
         for (Product product : products) {
             total += product.getCost() * product.getStock();

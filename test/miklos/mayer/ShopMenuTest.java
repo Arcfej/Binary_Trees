@@ -28,6 +28,7 @@ class ShopMenuTest {
         System.setOut(new PrintStream(out));
 
         menu = new Menu();
+        menu.resetShop();
         shop = menu.getShop();
     }
 
@@ -68,7 +69,7 @@ class ShopMenuTest {
         } catch (Exception ignored) { }
         assertEquals(
                 List.of(new Product(1, "Test Product 1", 10.5f, 8)),
-                shop.getCatalogue());
+                shop.getOrderedCatalogue());
     }
 
     @Test
@@ -91,7 +92,7 @@ class ShopMenuTest {
                         new Product(3, "Test Product 3", 12.5f, 10),
                         new Product(4, "Test Product 4", 13.5f, 11),
                         new Product(5, "Test Product 5", 14.5f, 12)),
-                shop.getCatalogue());
+                shop.getOrderedCatalogue());
     }
 
     @Test
@@ -237,6 +238,33 @@ class ShopMenuTest {
         } catch (Exception ignored) { }
         assertEquals((Menu.MENU + "\n" +
                         "The total cost of products is £635.0\n" +
+                        Menu.LINE_SEPARATOR + "\n" +
+                        Menu.MENU + "\n"
+                ).replaceAll("\\n|\\r\\n", System.lineSeparator()),
+                out.toString().replaceAll("\\n|\\r\\n", System.lineSeparator())
+        );
+    }
+
+    @Test
+    @Order(10)
+    void testShopRestore() {
+        menu = new Menu();
+        String input = "2\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        out.reset();
+        try {
+            menu.displayMenu();
+        } catch (Exception ignored) { }
+        assertEquals((Menu.MENU + "\n" +
+                        "|        ID|                Name|      Cost|     Stock|\n" +
+                        "|----------|--------------------|----------|----------|\n" +
+                        "|         1|      Test Product 1|     £10.5|         8|\n" +
+                        "|         2|      Test Product 2|     £11.5|         9|\n" +
+                        "|         3|      Test Product 3|     £12.5|        10|\n" +
+                        "|         4|      Test Product 4|     £13.5|        11|\n" +
+                        "|         5|      Test Product 5|     £14.5|        12|\n" +
+                        "|----------|--------------------|----------|----------|\n" +
+                        "\n" +
                         Menu.LINE_SEPARATOR + "\n" +
                         Menu.MENU + "\n"
                 ).replaceAll("\\n|\\r\\n", System.lineSeparator()),
