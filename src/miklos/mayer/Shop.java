@@ -40,4 +40,13 @@ public class Shop {
     public Product findProduct(int id) {
         return catalogue.find(id);
     }
+
+    public float getTotalCost() {
+        List<Product> products = getCatalogue();
+        float total = 0;
+        for (Product product : products) {
+            total += product.getCost() * product.getStock();
+        }
+        return total;
+    }
 }

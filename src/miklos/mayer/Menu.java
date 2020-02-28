@@ -10,6 +10,7 @@ public class Menu {
     public static final String MENU = "1) Add a new product to your shop\n" +
             "2) Print shop catalogue\n" +
             "3) Find product\n" +
+            "4) Print total cost of products\n" +
             "0) Exit\n";
 
     private Shop shop;
@@ -41,6 +42,9 @@ public class Menu {
                     break;
                 case "3":
                     findProduct(in);
+                    break;
+                case "4":
+                    printTotalCost();
                     break;
                 default:
                     System.out.println("Not a valid command!");
@@ -99,6 +103,10 @@ public class Menu {
         } else {
             printCatalogue(List.of(product));
         }
+    }
+
+    private void printTotalCost() {
+        System.out.println("The total cost of products is £" + shop.getTotalCost());
     }
 
     private String getTextInput(Scanner in, String question, String errorMessage, Predicate<String> validation) {

@@ -225,4 +225,22 @@ class ShopMenuTest {
                 out.toString().replaceAll("\\n|\\r\\n", System.lineSeparator())
         );
     }
+
+    @Test
+    @Order(9)
+    void printTotalCostOfProducts() {
+        String input = "4\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        out.reset();
+        try {
+            menu.displayMenu();
+        } catch (Exception ignored) { }
+        assertEquals((Menu.MENU + "\n" +
+                        "The total cost of products is £635.0\n" +
+                        Menu.LINE_SEPARATOR + "\n" +
+                        Menu.MENU + "\n"
+                ).replaceAll("\\n|\\r\\n", System.lineSeparator()),
+                out.toString().replaceAll("\\n|\\r\\n", System.lineSeparator())
+        );
+    }
 }
