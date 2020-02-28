@@ -68,4 +68,16 @@ class BinaryTreeTest {
         assertFalse(tree.contains(11));
         assertFalse(tree.contains(555));
     }
+
+    @Test
+    @Order(6)
+    void findData() {
+        assertEquals(10, tree.find(10));
+    }
+
+    @Test
+    @Order(7)
+    void findNonexistentData() {
+        assertNull(tree.find(555));
+    }
 }

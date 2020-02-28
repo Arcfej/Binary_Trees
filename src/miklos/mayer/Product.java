@@ -1,8 +1,6 @@
 package miklos.mayer;
 
-import java.util.function.Predicate;
-
-public class Product implements Comparable<Product> {
+public class Product {
 
     private final int id;
 
@@ -54,18 +52,14 @@ public class Product implements Comparable<Product> {
     }
 
     @Override
-    public int compareTo(Product otherProduct) {
-        return Integer.compare(this.id, otherProduct.getId());
-    }
-
-    @Override
     public boolean equals(Object obj) {
+        Product other;
         try {
-            obj = (Product) obj;
+            other = (Product) obj;
         } catch (ClassCastException e) {
             return false;
         }
-        if (id != ((Product) obj).getId() || !name.equals(((Product) obj).getName()) || cost != ((Product) obj).getCost() || stock != ((Product) obj).getStock()) {
+        if (id != other.getId() || !name.equals(other.getName()) || cost != other.getCost() || stock != other.getStock()) {
             return false;
         } else {
             return true;

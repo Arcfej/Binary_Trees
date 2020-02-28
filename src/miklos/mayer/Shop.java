@@ -36,4 +36,8 @@ public class Shop {
     public boolean containsId(int id) {
         return catalogue.contains(id);
     }
+
+    public Product findProduct(int id) {
+        return catalogue.find(id);
+    }
 }

@@ -7,6 +7,10 @@ import java.util.function.Predicate;
 public class Menu {
 
     private static final String LINE_SEPARATOR = "-----------------------";
+    public static final String MENU = "1) Add a new product to your shop\n" +
+            "2) Print shop catalogue\n" +
+            "3) Find product\n" +
+            "0) Exit\n";
 
     private Shop shop;
 
@@ -22,9 +26,7 @@ public class Menu {
     public void displayMenu() {
         Scanner in = new Scanner(System.in);
         while (true) {
-            System.out.println("1) Add a new product to your shop");
-            System.out.println("2) Print shop catalogue");
-            System.out.println("0) Exit");
+            System.out.println(MENU);
 
             switch (in.nextLine()) {
                 case "0":
@@ -35,13 +37,10 @@ public class Menu {
                     break;
                 case "2":
                     List<Product> productList = shop.getCatalogue();
-                    System.out.printf("|%10s|%20s|%10s|%10s|\n", "ID", "Name", "Cost", "Stock");
-                    System.out.println(String.format("|%10s|%20s|%10s|%10s|", "", "", "", "").replace(" ", "-"));
-                    productList.forEach(product ->
-                            System.out.printf("|%10s|%20s|%10s|%10s|\n", product.getId(), product.getName(), "£" + product.getCost(), product.getStock())
-                    );
-                    System.out.println(String.format("|%10s|%20s|%10s|%10s|", "", "", "", "").replace(" ", "-"));
-                    System.out.println();
+                    printCatalogue(productList);
+                    break;
+                case "3":
+                    findProduct();
                     break;
                 default:
                     System.out.println("Not a valid command!");
@@ -76,6 +75,20 @@ public class Menu {
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private void printCatalogue(List<Product> productList) {
+        System.out.printf("|%10s|%20s|%10s|%10s|\n", "ID", "Name", "Cost", "Stock");
+        System.out.println(String.format("|%10s|%20s|%10s|%10s|", "", "", "", "").replace(" ", "-"));
+        productList.forEach(product ->
+                System.out.printf("|%10s|%20s|%10s|%10s|\n", product.getId(), product.getName(), "£" + product.getCost(), product.getStock())
+        );
+        System.out.println(String.format("|%10s|%20s|%10s|%10s|", "", "", "", "").replace(" ", "-"));
+        System.out.println();
+    }
+
+    private void findProduct() {
+
     }
 
     private String getTextInput(Scanner in, String question, String errorMessage, Predicate<String> validation) {

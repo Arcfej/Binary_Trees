@@ -70,8 +70,22 @@ public class BinaryTree<Key extends Comparable<Key>, E> {
         size++;
     }
 
-    public E find(Predicate<E> predicate) {
-        return null;
+    public E find(Key key) {
+        return findRecursive(key, root);
+    }
+
+    private E findRecursive(Key key, Node<Key, E> node) {
+        if (node == null) { // If the node null the subtree doesn't contains the data
+            return null;
+        }
+        int direction = key.compareTo(node.getKey());
+        if (direction == 0) { // If equal we find the data
+            return node.getData();
+        } else if (direction < 0) { // If the key smaller than current go left
+            return findRecursive(key, node.getLeft());
+        } else { // If bigger, go right
+            return findRecursive(key, node.getRight());
+        }
     }
 
     public boolean delete(E data) {
