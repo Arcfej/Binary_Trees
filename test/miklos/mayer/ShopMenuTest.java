@@ -8,7 +8,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class MenuTest {
+class ShopMenuTest {
 
     private static Menu menu;
 
@@ -46,17 +46,13 @@ class MenuTest {
         try {
             menu.displayMenu();
         } catch (Exception ignored) { }
-        assertEquals(("1) Add a new product to your shop\n" +
-                    "2) Print shop catalogue\n" +
-                    "0) Exit\n" +
+        assertEquals((Menu.MENU + "\n" +
                     "|        ID|                Name|      Cost|     Stock|\n" +
                     "|----------|--------------------|----------|----------|\n" +
                     "|----------|--------------------|----------|----------|\n" +
                     "\n" +
                     "-----------------------\n" +
-                    "1) Add a new product to your shop\n" +
-                    "2) Print shop catalogue\n" +
-                    "0) Exit\n"
+                    Menu.MENU + "\n"
                 ).replaceAll("\\n|\\r\\n", System.lineSeparator()),
                 out.toString().replaceAll("\\n|\\r\\n", System.lineSeparator())
                 );
@@ -107,9 +103,7 @@ class MenuTest {
         try {
             menu.displayMenu();
         } catch (Exception ignored) { }
-        assertEquals(("1) Add a new product to your shop\n" +
-                        "2) Print shop catalogue\n" +
-                        "0) Exit\n" +
+        assertEquals((Menu.MENU + "\n" +
                         "|        ID|                Name|      Cost|     Stock|\n" +
                         "|----------|--------------------|----------|----------|\n" +
                         "|         1|      Test Product 1|     £10.5|         8|\n" +
@@ -120,9 +114,7 @@ class MenuTest {
                         "|----------|--------------------|----------|----------|\n" +
                         "\n" +
                         "-----------------------\n" +
-                        "1) Add a new product to your shop\n" +
-                        "2) Print shop catalogue\n" +
-                        "0) Exit\n"
+                        Menu.MENU + "\n"
                 ).replaceAll("\\n|\\r\\n", System.lineSeparator()),
                 out.toString().replaceAll("\\n|\\r\\n", System.lineSeparator())
         );
@@ -137,24 +129,16 @@ class MenuTest {
         try {
             menu.displayMenu();
         } catch (Exception ignored) { }
-        assertEquals(("1) Add a new product to your shop\n" +
-                        "2) Print shop catalogue\n" +
-                        "0) Exit\n" +
+        assertEquals((Menu.MENU + "\n" +
                         "Not a valid command!\n" +
                         "-----------------------\n" +
-                        "1) Add a new product to your shop\n" +
-                        "2) Print shop catalogue\n" +
-                        "0) Exit\n" +
+                        Menu.MENU + "\n" +
                         "Not a valid command!\n" +
                         "-----------------------\n" +
-                        "1) Add a new product to your shop\n" +
-                        "2) Print shop catalogue\n" +
-                        "0) Exit\n" +
+                        Menu.MENU + "\n" +
                         "Not a valid command!\n" +
                         "-----------------------\n" +
-                        "1) Add a new product to your shop\n" +
-                        "2) Print shop catalogue\n" +
-                        "0) Exit\n" +
+                        Menu.MENU + "\n" +
                         "Please enter an ID for the new product:\n" +
                         "You have not entered a whole number for the new ID or the shop already has a product with the ID.\n" +
                         "Please enter an ID for the new product:\n" +
@@ -191,9 +175,7 @@ class MenuTest {
         try {
             menu.displayMenu();
         } catch (Exception ignored) { }
-        assertEquals(("1) Add a new product to your shop\n" +
-                        "2) Print shop catalogue\n" +
-                        "0) Exit\n" +
+        assertEquals((Menu.MENU + "\n" +
                         "Please enter an ID for the new product:\n" +
                         "You have not entered a whole number for the new ID or the shop already has a product with the ID.\n" +
                         "Please enter an ID for the new product:\n"

@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class BinaryTreeTest {
 
-    static BinaryTree<Integer> tree;
+    static BinaryTree<Integer, Integer> tree;
 
     @BeforeAll
     static void beforeAll() {
@@ -27,7 +27,7 @@ class BinaryTreeTest {
     @Order(2)
     void addOneItem() {
         try {
-            tree.add(5);
+            tree.add(5, 5);
         } catch (DuplicateItemException e) {
             fail("There shouldn't be any exception.");
         }
@@ -38,11 +38,11 @@ class BinaryTreeTest {
     @Order(3)
     void addFiveMoreItem_TraverseInOrder() {
         try {
-            tree.add(1);
-            tree.add(4);
-            tree.add(6);
-            tree.add(10);
-            tree.add(8);
+            tree.add(1, 1);
+            tree.add(4, 4);
+            tree.add(6, 6);
+            tree.add(10, 10);
+            tree.add(8, 8);
         } catch (DuplicateItemException e) {
             fail("There shouldn't be any exception");
         }
@@ -52,7 +52,7 @@ class BinaryTreeTest {
     @Test
     @Order(4)
     void addDuplicateItem() {
-        assertThrows(DuplicateItemException.class, () -> tree.add(8));
+        assertThrows(DuplicateItemException.class, () -> tree.add(8, 8));
     }
 
     @Test

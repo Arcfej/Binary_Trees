@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class BinaryTree<E extends Comparable<E>> {
+public class BinaryTree<Key extends Comparable<Key>, E> {
 
-    private Node<E> root;
+    private Node<Key, E> root;
 
     private int size;
 
@@ -19,38 +19,38 @@ public class BinaryTree<E extends Comparable<E>> {
         return root.getData();
     }
 
-    public boolean contains(E data) {
-        return recursiveContains(root, data);
+    public boolean contains(Key key) {
+        return recursiveContains(root, key);
     }
 
-    private boolean recursiveContains(Node<E> node, E data) {
+    private boolean recursiveContains(Node<Key, E> node, Key key) {
         if (node == null) {
             return false; // Node null, node not equals data
         }
-        if (node.getData().compareTo(data) == 0) {
+        if (node.getKey().compareTo(key) == 0) {
             return true; // Node equals data
         }
-        if (recursiveContains(node.getRight(), data)) {
+        if (recursiveContains(node.getRight(), key)) {
             return true; // Return true if right subtree contains data
         }
-        if (recursiveContains(node.getLeft(), data)) {
+        if (recursiveContains(node.getLeft(), key)) {
             return true; // Return true if left subtree contains data
         }
         return false; // return false if neither subtree contains data
     }
 
-    public void add(E data) throws DuplicateItemException {
+    public void add(Key key, E data) throws DuplicateItemException {
         if (root == null) {
-            root = new Node<>(data, null);
+            root = new Node<>(key, data, null);
             size++;
             return;
         }
-        Node<E> current = root;
-        Node<E> parent = null;
+        Node<Key, E> current = root;
+        Node<Key, E> parent = null;
         int direction = 0;
         // Find a place for the new data
         while (current != null) {
-            direction = data.compareTo(current.getData());
+            direction = key.compareTo(current.getKey());
             parent = current;
             if (direction < 0) { // If the new data smaller than current go left
                 current = current.getLeft();
@@ -61,7 +61,7 @@ public class BinaryTree<E extends Comparable<E>> {
             }
         }
         // Add the new data to the empty space based on direction
-        current = new Node<>(data, parent);
+        current = new Node<>(key, data, parent);
         if (direction < 0) {
             parent.setLeft(current);
         } else {
@@ -87,7 +87,7 @@ public class BinaryTree<E extends Comparable<E>> {
         return recursiveInOrder(list, root);
     }
 
-    private List<E> recursiveInOrder(List<E> list, Node<E> node) {
+    private List<E> recursiveInOrder(List<E> list, Node<Key, E> node) {
         if (node == null) {
             return list;
         }
@@ -113,18 +113,24 @@ public class BinaryTree<E extends Comparable<E>> {
         return null;
     }
 
-    public static class Node<T extends Comparable<T>> {
+    public static class Node<Key, T> {
 
+        private Key key;
         private T data;
-        private Node<T> parent;
-        private Node<T> left;
-        private Node<T> right;
+        private Node<Key, T> parent;
+        private Node<Key, T> left;
+        private Node<Key, T> right;
 
-        public Node(T data, Node<T> parent) {
+        public Node(Key key, T data, Node<Key, T> parent) {
+            this.key = key;
             this.data = data;
             this.parent = parent;
             left = null;
             right = null;
+        }
+
+        public Key getKey() {
+            return key;
         }
 
         public T getData() {
@@ -135,11 +141,11 @@ public class BinaryTree<E extends Comparable<E>> {
             this.data = data;
         }
 
-        public Node<T> getParent() {
+        public Node<Key, T> getParent() {
             return parent;
         }
 
-        public void setParent(Node<T> parent) {
+        public void setParent(Node<Key, T> parent) {
             this.parent = parent;
         }
 
@@ -147,11 +153,11 @@ public class BinaryTree<E extends Comparable<E>> {
             return left != null;
         }
 
-        public Node<T> getLeft() {
+        public Node<Key, T> getLeft() {
             return left;
         }
 
-        public void setLeft(Node<T> left) {
+        public void setLeft(Node<Key, T> left) {
             this.left = left;
         }
 
@@ -159,11 +165,11 @@ public class BinaryTree<E extends Comparable<E>> {
             return right != null;
         }
 
-        public Node<T> getRight() {
+        public Node<Key, T> getRight() {
             return right;
         }
 
-        public void setRight(Node<T> right) {
+        public void setRight(Node<Key, T> right) {
             this.right = right;
         }
 

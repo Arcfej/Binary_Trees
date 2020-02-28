@@ -12,10 +12,6 @@ public class Product implements Comparable<Product> {
 
     private int stock;
 
-    public Product(int id) {
-        this(id, "", 0, 0);
-    }
-
     public Product(int id, String name, float cost, int quantity) {
         this.id = id;
         this.name = name;
