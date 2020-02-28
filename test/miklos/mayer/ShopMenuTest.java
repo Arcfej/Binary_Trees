@@ -51,7 +51,7 @@ class ShopMenuTest {
                     "|----------|--------------------|----------|----------|\n" +
                     "|----------|--------------------|----------|----------|\n" +
                     "\n" +
-                    "-----------------------\n" +
+                    Menu.LINE_SEPARATOR + "\n" +
                     Menu.MENU + "\n"
                 ).replaceAll("\\n|\\r\\n", System.lineSeparator()),
                 out.toString().replaceAll("\\n|\\r\\n", System.lineSeparator())
@@ -113,7 +113,7 @@ class ShopMenuTest {
                         "|         5|      Test Product 5|     £14.5|        12|\n" +
                         "|----------|--------------------|----------|----------|\n" +
                         "\n" +
-                        "-----------------------\n" +
+                        Menu.LINE_SEPARATOR + "\n" +
                         Menu.MENU + "\n"
                 ).replaceAll("\\n|\\r\\n", System.lineSeparator()),
                 out.toString().replaceAll("\\n|\\r\\n", System.lineSeparator())
@@ -131,13 +131,13 @@ class ShopMenuTest {
         } catch (Exception ignored) { }
         assertEquals((Menu.MENU + "\n" +
                         "Not a valid command!\n" +
-                        "-----------------------\n" +
+                        Menu.LINE_SEPARATOR + "\n" +
                         Menu.MENU + "\n" +
                         "Not a valid command!\n" +
-                        "-----------------------\n" +
+                        Menu.LINE_SEPARATOR + "\n" +
                         Menu.MENU + "\n" +
                         "Not a valid command!\n" +
-                        "-----------------------\n" +
+                        Menu.LINE_SEPARATOR + "\n" +
                         Menu.MENU + "\n" +
                         "Please enter an ID for the new product:\n" +
                         "You have not entered a whole number for the new ID or the shop already has a product with the ID.\n" +
@@ -179,6 +179,48 @@ class ShopMenuTest {
                         "Please enter an ID for the new product:\n" +
                         "You have not entered a whole number for the new ID or the shop already has a product with the ID.\n" +
                         "Please enter an ID for the new product:\n"
+                ).replaceAll("\\n|\\r\\n", System.lineSeparator()),
+                out.toString().replaceAll("\\n|\\r\\n", System.lineSeparator())
+        );
+    }
+
+    @Test
+    @Order(7)
+    void searchProduct() {
+        String input = "3\n1\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        out.reset();
+        try {
+            menu.displayMenu();
+        } catch (Exception ignored) { }
+        assertEquals((Menu.MENU + "\n" +
+                        "Please enter the ID of the product you're looking for:\n" +
+                        "|        ID|                Name|      Cost|     Stock|\n" +
+                        "|----------|--------------------|----------|----------|\n" +
+                        "|         1|      Test Product 1|     £10.5|         8|\n" +
+                        "|----------|--------------------|----------|----------|\n" +
+                        "\n" +
+                        Menu.LINE_SEPARATOR + "\n" +
+                        Menu.MENU + "\n"
+                ).replaceAll("\\n|\\r\\n", System.lineSeparator()),
+                out.toString().replaceAll("\\n|\\r\\n", System.lineSeparator())
+        );
+    }
+
+    @Test
+    @Order(8)
+    void searchNonexistentProduct() {
+        String input = "3\n6\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        out.reset();
+        try {
+            menu.displayMenu();
+        } catch (Exception ignored) { }
+        assertEquals((Menu.MENU + "\n" +
+                        "Please enter the ID of the product you're looking for:\n" +
+                        "The required product is not in the shop\n" +
+                        Menu.LINE_SEPARATOR + "\n" +
+                        Menu.MENU + "\n"
                 ).replaceAll("\\n|\\r\\n", System.lineSeparator()),
                 out.toString().replaceAll("\\n|\\r\\n", System.lineSeparator())
         );

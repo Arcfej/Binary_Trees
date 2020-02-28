@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 
 public class Menu {
 
-    private static final String LINE_SEPARATOR = "-----------------------";
+    public static final String LINE_SEPARATOR = "-----------------------";
     public static final String MENU = "1) Add a new product to your shop\n" +
             "2) Print shop catalogue\n" +
             "3) Find product\n" +
@@ -40,7 +40,7 @@ public class Menu {
                     printCatalogue(productList);
                     break;
                 case "3":
-                    findProduct();
+                    findProduct(in);
                     break;
                 default:
                     System.out.println("Not a valid command!");
@@ -87,8 +87,18 @@ public class Menu {
         System.out.println();
     }
 
-    private void findProduct() {
-
+    private void findProduct(Scanner in) {
+        int id = getIntInput(in,
+                "Please enter the ID of the product you're looking for:",
+                "You have not entered a valid ID. ID must be a whole number.",
+                integer -> integer > 0
+        );
+        Product product = shop.findProduct(id);
+        if (product == null) {
+            System.out.println("The required product is not in the shop");
+        } else {
+            printCatalogue(List.of(product));
+        }
     }
 
     private String getTextInput(Scanner in, String question, String errorMessage, Predicate<String> validation) {
