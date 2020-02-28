@@ -95,30 +95,57 @@ public class BinaryTree<Key extends Comparable<Key>, E> {
     }
 
     public List<E> traverseInOrder() {
-        List<E> list = new ArrayList<>(size);
-        return recursiveInOrder(list, root);
+        return recursiveInOrder(new ArrayList<>(size), root);
     }
 
     private List<E> recursiveInOrder(List<E> list, Node<Key, E> node) {
         if (node == null) {
             return list;
         }
-        if (node.getLeft() != null) {
+        if (node.hasLeft()) {
             recursiveInOrder(list, node.getLeft());
         }
         list.add(node.getData());
-        if (node.getRight() != null) {
+        if (node.hasRight()) {
             recursiveInOrder(list, node.getRight());
         }
         return list;
     }
 
     public List<E> traversePreOrder() {
-        return null;
+        return recursivePreOrder(new ArrayList<>(size), root);
+    }
+
+    private List<E> recursivePreOrder(List<E> list, Node<Key, E> node) {
+        if (node == null) {
+            return list;
+        }
+        list.add(node.getData());
+        if (node.hasLeft()) {
+            recursivePreOrder(list, node.getLeft());
+        }
+        if (node.hasRight()) {
+            recursivePreOrder(list, node.getRight());
+        }
+        return list;
     }
 
     public List<E> traversePostOrder() {
-        return null;
+        return recursivePostOrder(new ArrayList<>(size), root);
+    }
+
+    private List<E> recursivePostOrder(List<E> list, Node<Key, E> node) {
+        if (node == null) {
+            return list;
+        }
+        if (node.hasLeft()) {
+            recursivePreOrder(list, node.getLeft());
+        }
+        if (node.hasRight()) {
+            recursivePreOrder(list, node.getRight());
+        }
+        list.add(node.getData());
+        return list;
     }
 
     public List<E> traverseOnLevel(int level) {
