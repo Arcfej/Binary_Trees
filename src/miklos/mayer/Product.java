@@ -65,4 +65,9 @@ public class Product {
             return true;
         }
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(id);
+    }
 }

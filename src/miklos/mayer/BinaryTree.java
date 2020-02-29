@@ -1,7 +1,9 @@
 package miklos.mayer;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.function.Predicate;
 
 public class BinaryTree<Key extends Comparable<Key>, E> {
@@ -139,17 +141,26 @@ public class BinaryTree<Key extends Comparable<Key>, E> {
             return list;
         }
         if (node.hasLeft()) {
-            recursivePreOrder(list, node.getLeft());
+            recursivePostOrder(list, node.getLeft());
         }
         if (node.hasRight()) {
-            recursivePreOrder(list, node.getRight());
+            recursivePostOrder(list, node.getRight());
         }
         list.add(node.getData());
         return list;
     }
 
-    public List<E> traverseOnLevel(int level) {
-        return null;
+    public List<E> traverseOnLevel() {
+        List<E> list = new ArrayList<>(size);
+        Queue<Node<Key, E>> queue = new ArrayDeque<>((int) Math.ceil((size + 1) / 2f));
+        if (root != null) queue.add(root);
+        while (!queue.isEmpty()) {
+            Node<Key, E> node = queue.poll();
+            list.add(node.getData());
+            if (node.hasLeft()) queue.add(node.getLeft());
+            if (node.hasRight()) queue.add(node.getRight());
+        }
+        return list;
     }
 
     public static class Node<Key, T> {

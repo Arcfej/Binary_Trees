@@ -4,6 +4,7 @@ import org.junit.jupiter.api.*;
 
 import java.io.*;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,7 +47,7 @@ class ShopMenuTest {
         out.reset();
         try {
             menu.displayMenu();
-        } catch (Exception ignored) { }
+        } catch (NoSuchElementException ignored) { }
         assertEquals((Menu.MENU + "\n" +
                     "|        ID|                Name|      Cost|     Stock|\n" +
                     "|----------|--------------------|----------|----------|\n" +
@@ -62,13 +63,13 @@ class ShopMenuTest {
     @Test
     @Order(2)
     void addProduct() {
-        String input = "1\n1\nTest Product 1\n10.5\n8\n";
+        String input = "1\n3\nTest Product 3\n12.5\n10\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         try {
             menu.displayMenu();
-        } catch (Exception ignored) { }
+        } catch (NoSuchElementException ignored) { }
         assertEquals(
-                List.of(new Product(1, "Test Product 1", 10.5f, 8)),
+                List.of(new Product(3, "Test Product 3", 12.5f, 10)),
                 shop.getOrderedCatalogue());
     }
 
@@ -76,15 +77,15 @@ class ShopMenuTest {
     @Order(3)
     void addMultipleProduct() {
         String input = "";
-        input += "1\n2\nTest Product 2\n11.5\n9\n";
-        input += "1\n3\nTest Product 3\n12.5\n10\n";
         input += "1\n4\nTest Product 4\n13.5\n11\n";
+        input += "1\n2\nTest Product 2\n11.5\n9\n";
         input += "1\n5\nTest Product 5\n14.5\n12\n";
+        input += "1\n1\nTest Product 1\n10.5\n8\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         out.reset();
         try {
             menu.displayMenu();
-        } catch (Exception ignored) { }
+        } catch (NoSuchElementException ignored) { }
         assertEquals(
                 List.of(
                         new Product(1, "Test Product 1", 10.5f, 8),
@@ -103,7 +104,7 @@ class ShopMenuTest {
         out.reset();
         try {
             menu.displayMenu();
-        } catch (Exception ignored) { }
+        } catch (NoSuchElementException ignored) { }
         assertEquals((Menu.MENU + "\n" +
                         "|        ID|                Name|      Cost|     Stock|\n" +
                         "|----------|--------------------|----------|----------|\n" +
@@ -129,7 +130,7 @@ class ShopMenuTest {
         out.reset();
         try {
             menu.displayMenu();
-        } catch (Exception ignored) { }
+        } catch (NoSuchElementException ignored) { }
         assertEquals((Menu.MENU + "\n" +
                         "Not a valid command!\n" +
                         Menu.LINE_SEPARATOR + "\n" +
@@ -175,7 +176,7 @@ class ShopMenuTest {
         out.reset();
         try {
             menu.displayMenu();
-        } catch (Exception ignored) { }
+        } catch (NoSuchElementException ignored) { }
         assertEquals((Menu.MENU + "\n" +
                         "Please enter an ID for the new product:\n" +
                         "You have not entered a whole number for the new ID or the shop already has a product with the ID.\n" +
@@ -193,7 +194,7 @@ class ShopMenuTest {
         out.reset();
         try {
             menu.displayMenu();
-        } catch (Exception ignored) { }
+        } catch (NoSuchElementException ignored) { }
         assertEquals((Menu.MENU + "\n" +
                         "Please enter the ID of the product you're looking for:\n" +
                         "|        ID|                Name|      Cost|     Stock|\n" +
@@ -216,7 +217,7 @@ class ShopMenuTest {
         out.reset();
         try {
             menu.displayMenu();
-        } catch (Exception ignored) { }
+        } catch (NoSuchElementException ignored) { }
         assertEquals((Menu.MENU + "\n" +
                         "Please enter the ID of the product you're looking for:\n" +
                         "The required product is not in the shop\n" +
@@ -235,7 +236,7 @@ class ShopMenuTest {
         out.reset();
         try {
             menu.displayMenu();
-        } catch (Exception ignored) { }
+        } catch (NoSuchElementException ignored) { }
         assertEquals((Menu.MENU + "\n" +
                         "The total cost of products is £635.0\n" +
                         Menu.LINE_SEPARATOR + "\n" +
@@ -254,7 +255,7 @@ class ShopMenuTest {
         out.reset();
         try {
             menu.displayMenu();
-        } catch (Exception ignored) { }
+        } catch (NoSuchElementException ignored) { }
         assertEquals((Menu.MENU + "\n" +
                         "|        ID|                Name|      Cost|     Stock|\n" +
                         "|----------|--------------------|----------|----------|\n" +

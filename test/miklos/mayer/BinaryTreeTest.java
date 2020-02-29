@@ -27,26 +27,31 @@ class BinaryTreeTest {
     @Order(2)
     void addOneItem() {
         try {
-            tree.add(5, 5);
+            tree.add(6, 6);
         } catch (DuplicateItemException e) {
             fail("There shouldn't be any exception.");
         }
-        assertEquals(5, tree.getRoot());
+        assertEquals(6, tree.getRoot());
     }
 
     @Test
     @Order(3)
     void addFiveMoreItem_TraverseInOrder() {
         try {
+            tree.add(3, 3);
+            tree.add(5, 5);
+            tree.add(2, 2);
+            tree.add(9, 9);
             tree.add(1, 1);
             tree.add(4, 4);
-            tree.add(6, 6);
+            tree.add(7, 7);
             tree.add(10, 10);
             tree.add(8, 8);
+            tree.add(11, 11);
         } catch (DuplicateItemException e) {
             fail("There shouldn't be any exception");
         }
-        assertEquals(new ArrayList<>(List.of(1, 4, 5, 6, 8, 10)), tree.traverseInOrder());
+        assertEquals(new ArrayList<>(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)), tree.traverseInOrder());
     }
 
     @Test
@@ -65,7 +70,7 @@ class BinaryTreeTest {
         assertTrue(tree.contains(8));
         assertTrue(tree.contains(10));
         assertFalse(tree.contains(0));
-        assertFalse(tree.contains(11));
+        assertFalse(tree.contains(21));
         assertFalse(tree.contains(555));
     }
 
@@ -79,5 +84,23 @@ class BinaryTreeTest {
     @Order(7)
     void findNonexistentData() {
         assertNull(tree.find(555));
+    }
+
+    @Test
+    @Order(8)
+    void testTraversePreOrder() {
+        assertEquals(List.of(6, 3, 2, 1, 5, 4, 9, 7, 8, 10, 11), tree.traversePreOrder());
+    }
+
+    @Test
+    @Order(9)
+    void testTraversePostOrder() {
+        assertEquals(List.of(1, 2, 4, 5, 3, 8, 7, 11, 10, 9, 6), tree.traversePostOrder());
+    }
+
+    @Test
+    @Order(10)
+    void testTraverseOnLevel() {
+        assertEquals(List.of(6, 3, 9, 2, 5, 7, 10, 1, 4, 8, 11), tree.traverseOnLevel());
     }
 }
