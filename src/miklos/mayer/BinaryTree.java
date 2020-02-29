@@ -79,7 +79,7 @@ public class BinaryTree<Key extends Comparable<Key>, E> {
             return null;
         }
         int direction = key.compareTo(node.getKey());
-        if (direction == 0) { // If equal we find the data
+        if (direction == 0) { // If equal we found the data
             return node.getData();
         } else if (direction < 0) { // If the key smaller than current go left
             return findRecursive(key, node.getLeft());
@@ -88,12 +88,56 @@ public class BinaryTree<Key extends Comparable<Key>, E> {
         }
     }
 
-    public boolean delete(E data) {
-        return false;
+    public boolean delete(Key key) {
+        if (this.find(key) != null) {
+            deleteRecursive(key, root);
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public boolean delete(Predicate<E> predicate) {
-        return false;
+    private Node<Key, E> deleteRecursive(Key key, Node<Key, E> node) {
+        if (node == null) { // If the node null the subtree doesn't contains the data
+            return null;
+        }
+        int direction = key.compareTo(node.getKey());
+        if (direction < 0) { // If the key smaller than current go left
+            node.setLeft(deleteRecursive(key, node.getLeft()));
+        } else if (direction > 0) { // If bigger, go right
+            node.setRight(deleteRecursive(key, node.getRight()));
+        } else { // If equal we found the data
+            if (!node.hasRight()) return node.getLeft(); // If right is null, replace node with left child
+            else if (!node.hasLeft()) return node.getRight(); // If only left is null, replace node with right child
+            // Node has too child:
+            node = deleteNodeWithTwoChildren(node);
+        }
+        return node; // Return
+    }
+
+    private Node<Key, E> deleteNodeWithTwoChildren(Node<Key, E> node) {
+        int leftDepth = node.getLeft().getDepth();
+        int rightDepth = node.getRight().getDepth();
+        Node<Key, E> replacement;
+        if (leftDepth > rightDepth) { // Replace node with the the rightmost child from the left subtree
+            replacement = node.getLeft();
+            while (replacement.getRight() != null) {
+                replacement = replacement.getRight();
+            }
+            node.getLeft().setRight(replacement.getLeft()); // Save the children of replacement
+            replacement.setLeft(node.getLeft());    // Copy the node's children to replacement
+            replacement.setRight(node.getRight());  // Copy the node's children to replacement
+        } else { // Replace node with the leftmost child from the right subtree
+            replacement = node.getRight();
+            while (replacement.getLeft() != null) {
+                replacement = replacement.getLeft();
+            }
+            node.getRight().setLeft(replacement.getLeft()); // Save the children of replacement
+            replacement.setLeft(node.getLeft());    // Copy the node's children to replacement
+            replacement.setRight(node.getRight());  // Copy the node's children to replacement
+        }
+        node = replacement; // Replace node with the replacement
+        return node;
     }
 
     public List<E> traverseInOrder() {

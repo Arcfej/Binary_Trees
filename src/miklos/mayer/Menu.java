@@ -12,6 +12,7 @@ public class Menu {
             "2) Print shop catalogue\n" +
             "3) Find product\n" +
             "4) Print total cost of products\n" +
+            "5) Delete product\n" +
             "0) Exit\n";
 
     private Shop shop;
@@ -49,6 +50,9 @@ public class Menu {
                     break;
                 case "4":
                     printTotalCost();
+                    break;
+                case "5":
+                    deleteProduct(in);
                     break;
                 default:
                     System.out.println("Not a valid command!");
@@ -111,6 +115,10 @@ public class Menu {
 
     private void printTotalCost() {
         System.out.println("The total cost of products is £" + shop.getTotalCost());
+    }
+
+    private void deleteProduct(Scanner in) {
+
     }
 
     private String getTextInput(Scanner in, String question, String errorMessage, Predicate<String> validation) {

@@ -103,4 +103,46 @@ class BinaryTreeTest {
     void testTraverseOnLevel() {
         assertEquals(List.of(6, 3, 9, 2, 5, 7, 10, 1, 4, 8, 11), tree.traverseOnLevel());
     }
+
+    @Test
+    @Order(11)
+    void deleteLeaf() {
+        assertTrue(tree.delete(11));
+        assertAll(
+                () -> assertEquals(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), tree.traverseInOrder()),
+                () -> assertEquals(List.of(6, 3, 2, 1, 5, 4, 9, 7, 8, 10), tree.traversePreOrder()),
+                () -> assertEquals(List.of(1, 2, 4, 5, 3, 8, 7, 10, 9, 6), tree.traversePostOrder()),
+                () -> assertEquals(List.of(6, 3, 9, 2, 5, 7, 10, 1, 4, 8), tree.traverseOnLevel())
+        );
+    }
+
+    @Test
+    @Order(12)
+    void deleteNodeWithOneChild() {
+        assertTrue(tree.delete(5));
+        assertAll(
+                () -> assertEquals(List.of(1, 2, 3, 4, 6, 7, 8, 9, 10), tree.traverseInOrder()),
+                () -> assertEquals(List.of(6, 3, 2, 1, 4, 9, 7, 8, 10), tree.traversePreOrder()),
+                () -> assertEquals(List.of(1, 2, 4, 3, 8, 7, 10, 9, 6), tree.traversePostOrder()),
+                () -> assertEquals(List.of(6, 3, 9, 2, 4, 7, 10, 1, 8), tree.traverseOnLevel())
+        );
+    }
+
+    @Test
+    @Order(13)
+    void deleteNodeWithTwoChild() {
+        assertTrue(tree.delete(9));
+        assertAll(
+                () -> assertEquals(List.of(1, 2, 3, 4, 6, 7, 8, 10), tree.traverseInOrder()),
+                () -> assertEquals(List.of(6, 3, 2, 1, 4, 8, 7, 10), tree.traversePreOrder()),
+                () -> assertEquals(List.of(1, 2, 4, 3, 7, 10, 8, 6), tree.traversePostOrder()),
+                () -> assertEquals(List.of(6, 3, 8, 2, 4, 7, 10, 1), tree.traverseOnLevel())
+        );
+    }
+
+    @Test
+    @Order(14)
+    void deleteNonexistentNode() {
+        assertFalse(tree.delete(555));
+    }
 }
