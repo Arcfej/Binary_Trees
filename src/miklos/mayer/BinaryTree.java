@@ -4,7 +4,6 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
-import java.util.function.Predicate;
 
 public class BinaryTree<Key extends Comparable<Key>, E> {
 
@@ -91,6 +90,7 @@ public class BinaryTree<Key extends Comparable<Key>, E> {
     public boolean delete(Key key) {
         if (this.find(key) != null) {
             root = deleteRecursive(key, root);
+            size--;
             return true;
         } else {
             return false;
@@ -116,8 +116,8 @@ public class BinaryTree<Key extends Comparable<Key>, E> {
     }
 
     private Node<Key, E> deleteNodeWithTwoChildren(Node<Key, E> toDelete) {
-        int leftDepth = toDelete.getLeft().getDepth();
-        int rightDepth = toDelete.getRight().getDepth();
+        int leftDepth = toDelete.getLeft().getHeight();
+        int rightDepth = toDelete.getRight().getHeight();
         Node<Key, E> replacement;
         if (leftDepth > rightDepth) { // Replace node with the the rightmost child from the left subtree
             replacement = toDelete.getLeft();
@@ -267,9 +267,9 @@ public class BinaryTree<Key extends Comparable<Key>, E> {
             this.right = right;
         }
 
-        private int getDepth() {
-            int rightDepth = right == null ? 0 : right.getDepth();
-            int leftDepth = left == null ? 0 : left.getDepth();
+        private int getHeight() {
+            int rightDepth = right == null ? 0 : right.getHeight();
+            int leftDepth = left == null ? 0 : left.getHeight();
 
             if (rightDepth > leftDepth) {
                 return rightDepth + 1;
