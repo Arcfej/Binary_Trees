@@ -90,7 +90,7 @@ public class BinaryTree<Key extends Comparable<Key>, E> {
 
     public boolean delete(Key key) {
         if (this.find(key) != null) {
-            deleteRecursive(key, root);
+            root = deleteRecursive(key, root);
             return true;
         } else {
             return false;
@@ -115,29 +115,29 @@ public class BinaryTree<Key extends Comparable<Key>, E> {
         return node; // Return
     }
 
-    private Node<Key, E> deleteNodeWithTwoChildren(Node<Key, E> node) {
-        int leftDepth = node.getLeft().getDepth();
-        int rightDepth = node.getRight().getDepth();
+    private Node<Key, E> deleteNodeWithTwoChildren(Node<Key, E> toDelete) {
+        int leftDepth = toDelete.getLeft().getDepth();
+        int rightDepth = toDelete.getRight().getDepth();
         Node<Key, E> replacement;
         if (leftDepth > rightDepth) { // Replace node with the the rightmost child from the left subtree
-            replacement = node.getLeft();
+            replacement = toDelete.getLeft();
             while (replacement.getRight() != null) {
                 replacement = replacement.getRight();
             }
-            node.getLeft().setRight(replacement.getLeft()); // Save the children of replacement
-            replacement.setLeft(node.getLeft());    // Copy the node's children to replacement
-            replacement.setRight(node.getRight());  // Copy the node's children to replacement
+            deleteRecursive(replacement.getKey(), toDelete); // Delete the replacement from tree
+            replacement.setLeft(toDelete.getLeft());    // Copy the node's children to replacement
+            replacement.setRight(toDelete.getRight());  // Copy the node's children to replacement
         } else { // Replace node with the leftmost child from the right subtree
-            replacement = node.getRight();
+            replacement = toDelete.getRight();
             while (replacement.getLeft() != null) {
                 replacement = replacement.getLeft();
             }
-            node.getRight().setLeft(replacement.getLeft()); // Save the children of replacement
-            replacement.setLeft(node.getLeft());    // Copy the node's children to replacement
-            replacement.setRight(node.getRight());  // Copy the node's children to replacement
+            deleteRecursive(replacement.getKey(), toDelete); // Delete the replacement from tree
+            replacement.setLeft(toDelete.getLeft());    // Copy the node's children to replacement
+            replacement.setRight(toDelete.getRight());  // Copy the node's children to replacement
         }
-        node = replacement; // Replace node with the replacement
-        return node;
+        toDelete = replacement; // Replace node with the replacement
+        return toDelete;
     }
 
     public List<E> traverseInOrder() {

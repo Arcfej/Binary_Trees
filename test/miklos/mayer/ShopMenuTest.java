@@ -359,9 +359,9 @@ class ShopMenuTest {
     }
 
     @Test
-    @Order(13)
+    @Order(14)
     void deleteProduct() {
-        String input = "5\n3";
+        String input = "5\n3\n2";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         out.reset();
         try {
@@ -372,9 +372,45 @@ class ShopMenuTest {
                         "Please enter the ID of the product you'd like to delete:\n" +
                         "The product have been deleted successfully\n" +
                         Menu.LINE_SEPARATOR + "\n" +
+                        Menu.MENU + "\n" +
+                        "|        ID|                Name|      Cost|     Stock|\n" +
+                        "|----------|--------------------|----------|----------|\n" +
+                        "|         1|      Test Product 1|     £10.5|         8|\n" +
+                        "|         2|      Test Product 2|     £11.5|         9|\n" +
+                        "|         4|      Test Product 4|     £13.5|        11|\n" +
+                        "|         5|      Test Product 5|     £14.5|        12|\n" +
+                        "|----------|--------------------|----------|----------|\n" +
+                        "\n" +
+                        Menu.LINE_SEPARATOR + "\n" +
                         Menu.MENU + "\n"
                 ).replaceAll("\\n|\\r\\n", System.lineSeparator()),
                 out.toString().replaceAll("\\n|\\r\\n", System.lineSeparator())
         );
+    }
+
+    @Test
+    @Order(15)
+    void deleteNonexistentProduct() {
+        String input = "5\n3";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        out.reset();
+        try {
+            menu.displayMenu();
+        } catch (NoSuchElementException ignored) {
+        }
+        assertEquals((Menu.MENU + "\n" +
+                        "Please enter the ID of the product you'd like to delete:\n" +
+                        "There is no product in the catalogue with this id.\n" +
+                        Menu.LINE_SEPARATOR + "\n" +
+                        Menu.MENU + "\n"
+                ).replaceAll("\\n|\\r\\n", System.lineSeparator()),
+                out.toString().replaceAll("\\n|\\r\\n", System.lineSeparator())
+        );
+    }
+
+    @Test
+    @Order(16)
+    void sellProduct() {
+
     }
 }
