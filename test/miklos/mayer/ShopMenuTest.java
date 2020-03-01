@@ -424,4 +424,58 @@ class ShopMenuTest {
                 out.toString().replaceAll("\\n|\\r\\n", System.lineSeparator())
         );
     }
+
+    @Test
+    @Order(18)
+    void increaseStock() {
+        String input = "7\n2\n7\n2\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        out.reset();
+        try {
+            menu.displayMenu();
+        } catch (NoSuchElementException ignored) {
+        }
+        assertEquals((Menu.MENU + "\n" +
+                        "Please enter the ID of the product whose stock you increased:\n" +
+                        "Please enter the additional quantity of the product:\n" +
+                        Menu.LINE_SEPARATOR + "\n" +
+                        Menu.MENU + "\n" +
+                        "|        ID|                Name|      Cost|     Stock|\n" +
+                        "|----------|--------------------|----------|----------|\n" +
+                        "|         1|      Test Product 1|     £10.5|         8|\n" +
+                        "|         2|      Test Product 2|     £11.5|         9|\n" +
+                        "|         4|      Test Product 4|     £13.5|        11|\n" +
+                        "|         5|      Test Product 5|     £14.5|        12|\n" +
+                        "|----------|--------------------|----------|----------|\n" +
+                        "\n" +
+                        Menu.LINE_SEPARATOR + "\n" +
+                        Menu.MENU + "\n"
+                ).replaceAll("\\n|\\r\\n", System.lineSeparator()),
+                out.toString().replaceAll("\\n|\\r\\n", System.lineSeparator())
+        );
+    }
+
+    @Test
+    @Order(19)
+    void testInvalidInputForStockIncrease() {
+        String input = "7\n0\nhh\n5.8\n \n-4\n7\n2\n0\n\n5.8\nkkk\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        out.reset();
+        try {
+            menu.displayMenu();
+        } catch (NoSuchElementException ignored) {
+        }
+        assertEquals((Menu.MENU + "\n" +
+                        ("Please enter the ID of the product whose stock you increased:\nYou have not entered a valid ID. ID must be a whole positive number.\n")
+                                .repeat(5) +
+                        "Please enter the ID of the product whose stock you increased:\n" +
+                        "The required product is not in the shop\n" +
+                        "Please enter the ID of the product whose stock you increased:\n" +
+                        ("Please enter the additional quantity of the product:\nPlease enter a whole number bigger than 0\n")
+                                .repeat(4) +
+                        "Please enter the additional quantity of the product:\n"
+                ).replaceAll("\\n|\\r\\n", System.lineSeparator()),
+                out.toString().replaceAll("\\n|\\r\\n", System.lineSeparator())
+        );
+    }
 }

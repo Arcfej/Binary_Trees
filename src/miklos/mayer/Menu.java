@@ -14,6 +14,7 @@ public class Menu {
             "4) Print total cost of products\n" +
             "5) Delete product\n" +
             "6) Sell product from stock\n" +
+            "7) Replace stock\n" +
             "0) Exit\n";
 
     private Shop shop;
@@ -57,6 +58,9 @@ public class Menu {
                     break;
                 case "6":
                     sellProduct(in);
+                    break;
+                case "7":
+                    increaseStock(in);
                     break;
                 default:
                     System.out.println("Not a valid command!");
@@ -157,6 +161,31 @@ public class Menu {
                 integer -> integer > 0 && integer < finalProduct.getStock()
         );
         product.decreaseStock(quantity);
+    }
+
+    private void increaseStock(Scanner in) {
+        int id;
+        Product product;
+        while (true) {
+            id = getIntInput(in,
+                    "Please enter the ID of the product whose stock you increased:",
+                    "You have not entered a valid ID. ID must be a whole positive number.",
+                    integer -> integer > 0
+            );
+            product = shop.findProduct(id);
+            if (product == null) {
+                System.out.println("The required product is not in the shop");
+            } else {
+                break;
+            }
+        }
+        final Product finalProduct = product;
+        int quantity = getIntInput(in,
+                "Please enter the additional quantity of the product:",
+                "Please enter a whole number bigger than 0",
+                integer -> integer > 0
+        );
+        product.increaseStock(quantity);
     }
 
     private String getTextInput(Scanner in, String question, String errorMessage, Predicate<String> validation) {
