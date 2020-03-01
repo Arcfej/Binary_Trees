@@ -102,7 +102,7 @@ public class Menu {
     private void findProduct(Scanner in) {
         int id = getIntInput(in,
                 "Please enter the ID of the product you're looking for:",
-                "You have not entered a valid ID. ID must be a whole number.",
+                "You have not entered a valid ID. ID must be a whole positive number.",
                 integer -> integer > 0
         );
         Product product = shop.findProduct(id);
@@ -118,7 +118,16 @@ public class Menu {
     }
 
     private void deleteProduct(Scanner in) {
-
+        int id = getIntInput(in,
+                "Please enter the ID of the product you'd like to delete:",
+                "You have not entered a valid ID. ID must be a whole positive number.",
+                integer -> integer > 0
+        );
+        if (shop.deleteProduct(id)) {
+            System.out.println("The product have been deleted successfully");
+        } else {
+            System.out.println("There is no product in the catalogue with this id.");
+        }
     }
 
     private String getTextInput(Scanner in, String question, String errorMessage, Predicate<String> validation) {

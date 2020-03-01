@@ -41,40 +41,67 @@ class ShopMenuTest {
 
     @Test
     @Order(1)
+    void testInvalidInputForMenu() {
+        String input = "10\ngg\n\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        out.reset();
+        try {
+            menu.displayMenu();
+        } catch (NoSuchElementException ignored) {
+        }
+        assertEquals((Menu.MENU + "\n" +
+                        "Not a valid command!\n" +
+                        Menu.LINE_SEPARATOR + "\n" +
+                        Menu.MENU + "\n" +
+                        "Not a valid command!\n" +
+                        Menu.LINE_SEPARATOR + "\n" +
+                        Menu.MENU + "\n" +
+                        "Not a valid command!\n" +
+                        Menu.LINE_SEPARATOR + "\n" +
+                        Menu.MENU + "\n"
+                ).replaceAll("\\n|\\r\\n", System.lineSeparator()),
+                out.toString().replaceAll("\\n|\\r\\n", System.lineSeparator())
+        );
+    }
+
+    @Test
+    @Order(2)
     void printEmptyCatalogue() {
         String input = "2\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         out.reset();
         try {
             menu.displayMenu();
-        } catch (NoSuchElementException ignored) { }
+        } catch (NoSuchElementException ignored) {
+        }
         assertEquals((Menu.MENU + "\n" +
-                    "|        ID|                Name|      Cost|     Stock|\n" +
-                    "|----------|--------------------|----------|----------|\n" +
-                    "|----------|--------------------|----------|----------|\n" +
-                    "\n" +
-                    Menu.LINE_SEPARATOR + "\n" +
-                    Menu.MENU + "\n"
+                        "|        ID|                Name|      Cost|     Stock|\n" +
+                        "|----------|--------------------|----------|----------|\n" +
+                        "|----------|--------------------|----------|----------|\n" +
+                        "\n" +
+                        Menu.LINE_SEPARATOR + "\n" +
+                        Menu.MENU + "\n"
                 ).replaceAll("\\n|\\r\\n", System.lineSeparator()),
                 out.toString().replaceAll("\\n|\\r\\n", System.lineSeparator())
-                );
+        );
     }
 
     @Test
-    @Order(2)
+    @Order(3)
     void addProduct() {
         String input = "1\n3\nTest Product 3\n12.5\n10\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         try {
             menu.displayMenu();
-        } catch (NoSuchElementException ignored) { }
+        } catch (NoSuchElementException ignored) {
+        }
         assertEquals(
                 List.of(new Product(3, "Test Product 3", 12.5f, 10)),
                 shop.getOrderedCatalogue());
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     void addMultipleProduct() {
         String input = "";
         input += "1\n4\nTest Product 4\n13.5\n11\n";
@@ -85,7 +112,8 @@ class ShopMenuTest {
         out.reset();
         try {
             menu.displayMenu();
-        } catch (NoSuchElementException ignored) { }
+        } catch (NoSuchElementException ignored) {
+        }
         assertEquals(
                 List.of(
                         new Product(1, "Test Product 1", 10.5f, 8),
@@ -97,14 +125,15 @@ class ShopMenuTest {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     void printShopCatalogue() {
         String input = "2\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         out.reset();
         try {
             menu.displayMenu();
-        } catch (NoSuchElementException ignored) { }
+        } catch (NoSuchElementException ignored) {
+        }
         assertEquals((Menu.MENU + "\n" +
                         "|        ID|                Name|      Cost|     Stock|\n" +
                         "|----------|--------------------|----------|----------|\n" +
@@ -123,14 +152,15 @@ class ShopMenuTest {
     }
 
     @Test
-    @Order(5)
-    void testInvalidInput() {
+    @Order(6)
+    void testInvalidInputForAddNewProduct() {
         String input = "10\ngg\n\n1\ngg\n-1\n8.5\n111\n \n\ntest\n-5.8\nhhh\n5.8\n-5\njjj\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         out.reset();
         try {
             menu.displayMenu();
-        } catch (NoSuchElementException ignored) { }
+        } catch (NoSuchElementException ignored) {
+        }
         assertEquals((Menu.MENU + "\n" +
                         "Not a valid command!\n" +
                         Menu.LINE_SEPARATOR + "\n" +
@@ -169,14 +199,15 @@ class ShopMenuTest {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     void testDuplicateProduct() {
         String input = "1\n1\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         out.reset();
         try {
             menu.displayMenu();
-        } catch (NoSuchElementException ignored) { }
+        } catch (NoSuchElementException ignored) {
+        }
         assertEquals((Menu.MENU + "\n" +
                         "Please enter an ID for the new product:\n" +
                         "You have not entered a whole number for the new ID or the shop already has a product with the ID.\n" +
@@ -187,14 +218,15 @@ class ShopMenuTest {
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     void searchProduct() {
         String input = "3\n1\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         out.reset();
         try {
             menu.displayMenu();
-        } catch (NoSuchElementException ignored) { }
+        } catch (NoSuchElementException ignored) {
+        }
         assertEquals((Menu.MENU + "\n" +
                         "Please enter the ID of the product you're looking for:\n" +
                         "|        ID|                Name|      Cost|     Stock|\n" +
@@ -210,14 +242,15 @@ class ShopMenuTest {
     }
 
     @Test
-    @Order(8)
+    @Order(9)
     void searchNonexistentProduct() {
         String input = "3\n6\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         out.reset();
         try {
             menu.displayMenu();
-        } catch (NoSuchElementException ignored) { }
+        } catch (NoSuchElementException ignored) {
+        }
         assertEquals((Menu.MENU + "\n" +
                         "Please enter the ID of the product you're looking for:\n" +
                         "The required product is not in the shop\n" +
@@ -229,14 +262,15 @@ class ShopMenuTest {
     }
 
     @Test
-    @Order(9)
+    @Order(10)
     void printTotalCostOfProducts() {
         String input = "4\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         out.reset();
         try {
             menu.displayMenu();
-        } catch (NoSuchElementException ignored) { }
+        } catch (NoSuchElementException ignored) {
+        }
         assertEquals((Menu.MENU + "\n" +
                         "The total cost of products is £635.0\n" +
                         Menu.LINE_SEPARATOR + "\n" +
@@ -247,7 +281,7 @@ class ShopMenuTest {
     }
 
     @Test
-    @Order(10)
+    @Order(11)
     void testShopRestore() {
         menu = new Menu();
         String input = "2\n";
@@ -255,7 +289,8 @@ class ShopMenuTest {
         out.reset();
         try {
             menu.displayMenu();
-        } catch (NoSuchElementException ignored) { }
+        } catch (NoSuchElementException ignored) {
+        }
         assertEquals((Menu.MENU + "\n" +
                         "|        ID|                Name|      Cost|     Stock|\n" +
                         "|----------|--------------------|----------|----------|\n" +
@@ -266,6 +301,76 @@ class ShopMenuTest {
                         "|         5|      Test Product 5|     £14.5|        12|\n" +
                         "|----------|--------------------|----------|----------|\n" +
                         "\n" +
+                        Menu.LINE_SEPARATOR + "\n" +
+                        Menu.MENU + "\n"
+                ).replaceAll("\\n|\\r\\n", System.lineSeparator()),
+                out.toString().replaceAll("\\n|\\r\\n", System.lineSeparator())
+        );
+    }
+
+    @Test
+    @Order(12)
+    void testInvalidInputForSearch() {
+        String input = "3\ngg\n\n5.8\n-89\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        out.reset();
+        try {
+            menu.displayMenu();
+        } catch (NoSuchElementException ignored) {
+        }
+        assertEquals((Menu.MENU + "\n" +
+                        "Please enter the ID of the product you're looking for:\n" +
+                        "You have not entered a valid ID. ID must be a whole positive number.\n" +
+                        "Please enter the ID of the product you're looking for:\n" +
+                        "You have not entered a valid ID. ID must be a whole positive number.\n" +
+                        "Please enter the ID of the product you're looking for:\n" +
+                        "You have not entered a valid ID. ID must be a whole positive number.\n" +
+                        "Please enter the ID of the product you're looking for:\n" +
+                        "You have not entered a valid ID. ID must be a whole positive number.\n" +
+                        "Please enter the ID of the product you're looking for:\n"
+                ).replaceAll("\\n|\\r\\n", System.lineSeparator()),
+                out.toString().replaceAll("\\n|\\r\\n", System.lineSeparator())
+        );
+    }
+
+    @Test
+    @Order(13)
+    void testInvalidInputForDelete() {
+        String input = "5\ngg\n\n5.8\n-89\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        out.reset();
+        try {
+            menu.displayMenu();
+        } catch (NoSuchElementException ignored) {
+        }
+        assertEquals((Menu.MENU + "\n" +
+                        "Please enter the ID of the product you'd like to delete:\n" +
+                        "You have not entered a valid ID. ID must be a whole positive number.\n" +
+                        "Please enter the ID of the product you'd like to delete:\n" +
+                        "You have not entered a valid ID. ID must be a whole positive number.\n" +
+                        "Please enter the ID of the product you'd like to delete:\n" +
+                        "You have not entered a valid ID. ID must be a whole positive number.\n" +
+                        "Please enter the ID of the product you'd like to delete:\n" +
+                        "You have not entered a valid ID. ID must be a whole positive number.\n" +
+                        "Please enter the ID of the product you'd like to delete:\n"
+                ).replaceAll("\\n|\\r\\n", System.lineSeparator()),
+                out.toString().replaceAll("\\n|\\r\\n", System.lineSeparator())
+        );
+    }
+
+    @Test
+    @Order(13)
+    void deleteProduct() {
+        String input = "5\n3";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        out.reset();
+        try {
+            menu.displayMenu();
+        } catch (NoSuchElementException ignored) {
+        }
+        assertEquals((Menu.MENU + "\n" +
+                        "Please enter the ID of the product you'd like to delete:\n" +
+                        "The product have been deleted successfully\n" +
                         Menu.LINE_SEPARATOR + "\n" +
                         Menu.MENU + "\n"
                 ).replaceAll("\\n|\\r\\n", System.lineSeparator()),

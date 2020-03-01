@@ -45,6 +45,10 @@ public class Shop {
         return catalogue.find(id);
     }
 
+    public boolean deleteProduct(int id) {
+        return catalogue.delete(id);
+    }
+
     public float getTotalCost() {
         List<Product> products = getOrderedCatalogue();
         float total = 0;
