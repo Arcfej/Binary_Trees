@@ -89,22 +89,39 @@ public class Product {
      * Increase the stock level of the product.
      *
      * @param quantity The quantity to increase the stock level with.
-     * @return
+     * @return the stock level after the increase
      */
     public int increaseStock(int quantity) {
         this.stock += quantity;
         return this.stock;
     }
 
+    /**
+     * Decrease the stock level of the product
+     *
+     * @param quantity The quantity to increase the stock level with
+     * @return the stock level after the decrease
+     */
     public int decreaseStock(int quantity) {
         this.stock -= quantity;
         return this.stock;
     }
 
+    /**
+     * Getter of the stock level of the product
+     *
+     * @return the stock level of the product
+     */
     public int getStock() {
         return stock;
     }
 
+    /**
+     * Two Products are equals if all of their fields are equals.
+     *
+     * @param obj the other object to compare to
+     * @return true if the two objects are equals
+     */
     @Override
     public boolean equals(Object obj) {
         Product other;
