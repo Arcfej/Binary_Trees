@@ -1,14 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="miklos.mayer.Menu"
-            prefHeight="400.0" prefWidth="600.0">
-
-</AnchorPane>
+<VBox spacing="6.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="miklos.mayer.Menu">
+   <HBox alignment="CENTER_RIGHT" spacing="12.0">
+      <Button fx:id="btn_show_all" mnemonicParsing="false" onAction="#printProducts" text="Show all product" />
+      <Region HBox.hgrow="ALWAYS" />
+      <HBox alignment="CENTER_LEFT" spacing="3.0">
+         <Label text="Search:"/>
+         <TextField fx:id="input_search" promptText="Product ID"/>
+      </HBox>
+      <Button fx:id="btn_search" mnemonicParsing="false" onAction="#findProduct" text="Search" />
+      <VBox.margin>
+         <Insets left="6.0" right="6.0" top="6.0" />
+      </VBox.margin>
+   </HBox>
+   <Separator prefWidth="200.0" />
+   <Label text="Add new product:">
+      <VBox.margin>
+         <Insets left="6.0" right="6.0" />
+      </VBox.margin>
+   </Label>
+   <HBox id="addContainer" alignment="CENTER_LEFT" spacing="12.0">
+      <HBox alignment="CENTER_LEFT" spacing="3.0">
+         <Label text="ID:"/>
+         <TextField fx:id="input_id"/>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" spacing="3.0">
+         <Label text="Name:"/>
+         <TextField fx:id="input_name"/>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" spacing="3.0">
+         <Label text="Cost:"/>
+         <TextField fx:id="input_cost"/>
+         <Label text="£"/>
+      </HBox>
+      <HBox alignment="CENTER_LEFT" spacing="3.0">
+         <Label text="Quantity:"/>
+         <TextField fx:id="input_quantity" maxWidth="70.0"/>
+      </HBox>
+      <Button fx:id="btn_add" mnemonicParsing="false" onAction="#addProduct" text="Add" />
+      <VBox.margin>
+         <Insets bottom="6.0" left="6.0" right="6.0" />
+      </VBox.margin>
+   </HBox>
+   <TableView editable="true">
+     <columns>
+        <TableColumn prefWidth="75.0" text="ID" />
+        <TableColumn prefWidth="75.0" style="width: auto;" text="Name" />
+        <TableColumn prefWidth="75.0" text="Cost" />
+        <TableColumn prefWidth="75.0" text="Stock" />
+     </columns>
+   </TableView>
+</VBox>

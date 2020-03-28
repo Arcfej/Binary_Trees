@@ -1,10 +1,14 @@
 package miklos.mayer;
 
 import javafx.application.Application;
+import javafx.event.Event;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.*;
 import java.util.List;
@@ -30,7 +34,7 @@ public class Menu extends Application {
             "4) Print total cost of products\n" +
             "5) Delete product\n" +
             "6) Sell product from stock\n" +
-            "7) Replace stock\n" +
+            "7) Increase stock\n" +
             "0) Exit\n";
 
     /**
@@ -49,19 +53,24 @@ public class Menu extends Application {
     /**
      * The entry point of the program. Displays the menu to the user in the first place.
      *
-     * @param args the starting algorithms of the program.
+     * @param args the starting arguments of the program.
      */
     public static void main(String[] args) {
         Menu menu = new Menu();
 //        menu.displayMenu();
-        launch(args);
+        Application.launch(Menu.class, args);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("menu.fxml"));
         primaryStage.setTitle("Shop");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setX(0);
+        primaryStage.setY(0);
+        primaryStage.setMinWidth(778);
+        primaryStage.setMinHeight(300);
+        Scene scene = new Scene(root);
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 
@@ -80,21 +89,21 @@ public class Menu extends Application {
                     System.exit(1);
                     saveCatalogue();
                 case "1":
-                    addProduct(in);
+//                    addProduct(in);
                     saveCatalogue();
                     break;
                 case "2":
                     List<Product> productList = shop.getOrderedCatalogue();
-                    printProducts(productList);
+//                    printProducts(productList);
                     break;
                 case "3":
-                    findProduct(in);
+//                    findProduct(in);
                     break;
                 case "4":
-                    printTotalCost();
+//                    printTotalCost();
                     break;
                 case "5":
-                    deleteProduct(in);
+//                    deleteProduct(in);
                     saveCatalogue();
                     break;
                 case "6":
@@ -114,96 +123,97 @@ public class Menu extends Application {
 
     /**
      * Takes input from the user for a new product, validates it and add it to the shop.
-     *
-     * @param in The Scanner through the user communicates with the program
-     *
+     * TODO
      */
-    private void addProduct(Scanner in) {
-        int id = getIntInput(in,
-                "Please enter an ID for the new product:",
-                "You have not entered a whole number for the new ID or the shop already has a product with the ID.",
-                integer -> integer > 0 && !shop.containsId(integer)
-        );
-        String name = getTextInput(in,
-                "Please enter the name of the product:",
-                "",
-                s -> !s.isBlank()
-        );
-        float cost = getFloatInput(in,
-                "Please enter the cost of the product:",
-                "Please enter a valid amount",
-                aFloat -> aFloat >= 0
-        );
-        int quantity = getIntInput(in,
-                "Please enter the initial quantity of the product:",
-                "Please enter a not negative, whole number!",
-                integer -> integer >= 0
-        );
-        try {
-            shop.addNewProduct(id, name, cost, quantity);
-        } catch (IllegalArgumentException e) {
-            // There shouldn't be any error after the validation
-            System.out.println(e.getMessage());
-        }
+    @FXML
+    public void addProduct(Event e) {
+//        int id = getIntInput(in,
+//                "Please enter an ID for the new product:",
+//                "You have not entered a whole number for the new ID or the shop already has a product with the ID.",
+//                integer -> integer > 0 && !shop.containsId(integer)
+//        );
+//        String name = getTextInput(in,
+//                "Please enter the name of the product:",
+//                "",
+//                s -> !s.isBlank()
+//        );
+//        float cost = getFloatInput(in,
+//                "Please enter the cost of the product:",
+//                "Please enter a valid amount",
+//                aFloat -> aFloat >= 0
+//        );
+//        int quantity = getIntInput(in,
+//                "Please enter the initial quantity of the product:",
+//                "Please enter a not negative, whole number!",
+//                integer -> integer >= 0
+//        );
+//        try {
+//            shop.addNewProduct(id, name, cost, quantity);
+//        } catch (IllegalArgumentException e) {
+//            // There shouldn't be any error after the validation
+//            System.out.println(e.getMessage());
+//        }
     }
 
     /**
      * Prints a list of products to the screen.
-     *
-     * @param productList The list of products to print out.
+     * TODO
      */
-    private void printProducts(List<Product> productList) {
-        System.out.printf("|%10s|%20s|%10s|%10s|\n", "ID", "Name", "Cost", "Stock");
-        System.out.println(String.format("|%10s|%20s|%10s|%10s|", "", "", "", "").replace(" ", "-"));
-        productList.forEach(product ->
-                System.out.printf("|%10s|%20s|%10s|%10s|\n", product.getId(), product.getName(), "£" + product.getCost(), product.getStock())
-        );
-        System.out.println(String.format("|%10s|%20s|%10s|%10s|", "", "", "", "").replace(" ", "-"));
-        System.out.println();
+    @FXML
+    private void printProducts(Event e) {
+//        System.out.printf("|%10s|%20s|%10s|%10s|\n", "ID", "Name", "Cost", "Stock");
+//        System.out.println(String.format("|%10s|%20s|%10s|%10s|", "", "", "", "").replace(" ", "-"));
+//        productList.forEach(product ->
+//                System.out.printf("|%10s|%20s|%10s|%10s|\n", product.getId(), product.getName(), "£" + product.getCost(), product.getStock())
+//        );
+//        System.out.println(String.format("|%10s|%20s|%10s|%10s|", "", "", "", "").replace(" ", "-"));
+//        System.out.println();
     }
 
     /**
      * Gets input from the user for a Product ID, search for it in the catalogue and print it to the user.
-     *
-     * @param in The Scanner through the user communicates with the program
+     * TODO
      */
-    private void findProduct(Scanner in) {
-        int id = getIntInput(in,
-                "Please enter the ID of the product you're looking for:",
-                "You have not entered a valid ID. ID must be a whole positive number.",
-                integer -> integer > 0
-        );
-        Product product = shop.findProduct(id);
-        if (product == null) {
-            System.out.println("The required product is not in the shop");
-        } else {
-            printProducts(List.of(product));
-        }
+    @FXML
+    private void findProduct(Event e) {
+//        int id = getIntInput(in,
+//                "Please enter the ID of the product you're looking for:",
+//                "You have not entered a valid ID. ID must be a whole positive number.",
+//                integer -> integer > 0
+//        );
+//        Product product = shop.findProduct(id);
+//        if (product == null) {
+//            System.out.println("The required product is not in the shop");
+//        } else {
+//            printProducts(List.of(product));
+//        }
     }
 
     /**
      * Prints the total cost of all the Products in the catalogue.
+     * TODO
      */
-    private void printTotalCost() {
+    @FXML
+    private void printTotalCost(Event e) {
         System.out.println("The total cost of products is £" + shop.getTotalCost());
     }
 
     /**
      * Gets input from the user for Product ID and delete it from the shop catalogue.
-     *
-     * @param in The Scanner through the user communicates with the program
+     * TODO
      */
-    private void deleteProduct(Scanner in) {
-        int id = getIntInput(in,
-                "Please enter the ID of the product you'd like to delete:",
-                "You have not entered a valid ID. ID must be a whole positive number.",
-                integer -> integer > 0
-        );
-        if (shop.deleteProduct(id)) {
-            System.out.println("The product have been deleted successfully");
-        } else {
-            System.out.println("There is no product in the catalogue with this id.");
-        }
+    @FXML
+    private void deleteProduct(Event e) {
+//        int id = getIntInput(in,
+//                "Please enter the ID of the product you'd like to delete:",
+//                "You have not entered a valid ID. ID must be a whole positive number.",
+//                integer -> integer > 0
+//        );
+//        if (shop.deleteProduct(id)) {
+//            System.out.println("The product have been deleted successfully");
+//        } else {
+//            System.out.println("There is no product in the catalogue with this id.");
+//        }
     }
 
     /**
