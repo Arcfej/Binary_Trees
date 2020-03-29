@@ -1,7 +1,6 @@
 package miklos.mayer;
 
 import javafx.application.Application;
-import javafx.beans.binding.FloatBinding;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.collections.ObservableList;
@@ -19,11 +18,19 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.function.Predicate;
 
 /**
  * Represents a Menu for the shop-catalogue program.
  */
 public class Menu extends Application {
+
+    // TODO comments
+    private static final String ERROR_ID_INPUT = "ID >= 0";
+    private static final String ERROR_ID_TAKEN = "ID already taken";
+    private static final String ERROR_NAME_INPUT = "Name mustn't be blank";
+    private static final String ERROR_COST_INPUT = "Cost >= 0";
+    private static final String ERROR_QUANTITY_INPUT = "Quantity >= 0";
 
     /**
      * A list of eligible menu options for displaying purposes
@@ -131,12 +138,19 @@ public class Menu extends Application {
             TableColumn<Product, ?> column = columns.get(i);
             column.setCellValueFactory(new PropertyValueFactory<>(fieldNames[i]));
         }
+
         displayProducts(shop.getOrderedCatalogue());
 
         // Initialize total cost
         totalCost = new SimpleFloatProperty();
         lbl_total_cost.textProperty().bind(totalCost.asString("£%s"));
         totalCost.set(shop.getTotalCost());
+    }
+
+    @Override
+    public void stop() throws Exception {
+        saveCatalogue();
+        super.stop();
     }
 
     /**
@@ -192,32 +206,69 @@ public class Menu extends Application {
      */
     @FXML
     public void addProduct(Event e) {
-//        int id = getIntInput(in,
-//                "Please enter an ID for the new product:",
-//                "You have not entered a whole number for the new ID or the shop already has a product with the ID.",
-//                integer -> integer > 0 && !shop.containsId(integer)
-//        );
-//        String name = getTextInput(in,
-//                "Please enter the name of the product:",
-//                "",
-//                s -> !s.isBlank()
-//        );
-//        float cost = getFloatInput(in,
-//                "Please enter the cost of the product:",
-//                "Please enter a valid amount",
-//                aFloat -> aFloat >= 0
-//        );
-//        int quantity = getIntInput(in,
-//                "Please enter the initial quantity of the product:",
-//                "Please enter a not negative, whole number!",
-//                integer -> integer >= 0
-//        );
-//        try {
-//            shop.addNewProduct(id, name, cost, quantity);
-//        } catch (IllegalArgumentException e) {
-//            // There shouldn't be any error after the validation
-//            System.out.println(e.getMessage());
-//        }
+        // Initial, invalid values
+        int id = -1;
+        String name = "";
+        float cost = -1;
+        int quantity = -1;
+
+        Predicate<Integer> idValidation = i -> i > 0 && !shop.containsId(i);
+        Predicate<String> nameValidation = s -> !s.isBlank();
+        Predicate<Float> costValidation = f -> f >= 0;
+        Predicate<Integer> quantityValidation = i -> i >= 0;
+
+        try {
+            id = Integer.parseInt(input_id.getText());
+            if (id < 0) {
+                displayError(input_id, ERROR_ID_INPUT);
+            } else if (shop.containsId(id)) {
+                displayError(input_id, ERROR_ID_TAKEN);
+            }
+        } catch (NumberFormatException numberFormatException) {
+            displayError(input_id, ERROR_ID_INPUT);
+        }
+
+        name = input_name.getText();
+        if (!nameValidation.test(name)) {
+            displayError(input_name, ERROR_NAME_INPUT);
+        }
+
+        try {
+            cost = Float.parseFloat(input_cost.getText());
+            if (!costValidation.test(cost)) {
+                displayError(input_cost, ERROR_COST_INPUT);
+            }
+        } catch (NumberFormatException numberFormatException) {
+            displayError(input_cost, ERROR_COST_INPUT);
+        }
+
+        try {
+            quantity = Integer.parseInt(input_quantity.getText());
+            if (!quantityValidation.test(quantity)) {
+                displayError(input_quantity, ERROR_QUANTITY_INPUT);
+            }
+        } catch (NumberFormatException numberFormatException) {
+            displayError(input_quantity, ERROR_QUANTITY_INPUT);
+        }
+
+        if (idValidation.test(id) && nameValidation.test(name) && costValidation.test(cost) && quantityValidation.test(quantity)) {
+            try {
+                shop.addNewProduct(id, name, cost, quantity);
+                input_id.clear();
+                input_id.setPromptText("");
+                input_name.clear();
+                input_name.setPromptText("");
+                input_cost.clear();
+                input_cost.setPromptText("");
+                input_quantity.clear();
+                input_quantity.setPromptText("");
+                displayProducts(shop.getOrderedCatalogue());
+                totalCost.set(shop.getTotalCost());
+            } catch (IllegalArgumentException exception) {
+                // There shouldn't be any error after the validation
+                System.out.println(exception.getMessage());
+            }
+        }
     }
 
     /**
@@ -262,20 +313,19 @@ public class Menu extends Application {
     @FXML
     private void findProduct(Event e) {
         String input = input_search.getText();
-        input_search.clear();
         int id = 0;
         try {
             id = Integer.parseInt(input);
-
+            input_search.clear();
+            input_search.setPromptText("Product ID");
             Product product = shop.findProduct(id);
             if (product == null) {
                 displayEmptyTable("There is no product with the given ID");
             } else {
                 displayProducts(List.of(product));
-                input_search.setPromptText("Product ID");
             }
         } catch (NumberFormatException numberFormatException) {
-            displayError(input_search, "ID is whole & positive number");
+            displayError(input_search, ERROR_ID_INPUT);
         }
     }
 
@@ -382,6 +432,7 @@ public class Menu extends Application {
      * @param errorMessage
      */
     private void displayError(TextInputControl target, String errorMessage) {
+        target.clear();
         target.setPromptText(errorMessage);
     }
 
