@@ -1,16 +1,19 @@
 package miklos.mayer;
 
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.io.*;
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.function.Predicate;
@@ -19,11 +22,6 @@ import java.util.function.Predicate;
  * Represents a Menu for the shop-catalogue program.
  */
 public class Menu extends Application {
-
-    /**
-     * Content separator line for displaying purposes
-     */
-    public static final String LINE_SEPARATOR = "-------------------------------------";
 
     /**
      * A list of eligible menu options for displaying purposes
@@ -41,6 +39,28 @@ public class Menu extends Application {
      * The shop of the program.
      */
     private Shop shop;
+
+    // TODO comments
+    @FXML
+    private TableView<Product> table;
+    @FXML
+    private Button btn_show_all;
+    @FXML
+    private Button btn_search;
+    @FXML
+    private TextField input_search;
+    @FXML
+    private TextField input_id;
+    @FXML
+    private TextField input_name;
+    @FXML
+    private TextField input_cost;
+    @FXML
+    private TextField input_quantity;
+    @FXML
+    private Button btn_add;
+    @FXML
+    private Label lbl_total_cost;
 
     /**
      * Base constructor
@@ -61,6 +81,11 @@ public class Menu extends Application {
         Application.launch(Menu.class, args);
     }
 
+    /**
+     * TODO
+     * @param primaryStage
+     * @throws Exception
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("menu.fxml"));
@@ -71,7 +96,17 @@ public class Menu extends Application {
         primaryStage.setMinHeight(300);
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
+
         primaryStage.show();
+    }
+
+    /**
+     * TODO
+     */
+    @FXML
+    public void initialize() {
+        displayProducts(shop.getOrderedCatalogue());
+        displayTotalCost(null);
     }
 
     /**
@@ -117,7 +152,7 @@ public class Menu extends Application {
                 default:
                     System.out.println("Not a valid command!");
             }
-            System.out.println(LINE_SEPARATOR);
+//            System.out.println(LINE_SEPARATOR);
         }
     }
 
@@ -160,14 +195,54 @@ public class Menu extends Application {
      * TODO
      */
     @FXML
-    private void printProducts(Event e) {
-//        System.out.printf("|%10s|%20s|%10s|%10s|\n", "ID", "Name", "Cost", "Stock");
-//        System.out.println(String.format("|%10s|%20s|%10s|%10s|", "", "", "", "").replace(" ", "-"));
-//        productList.forEach(product ->
-//                System.out.printf("|%10s|%20s|%10s|%10s|\n", product.getId(), product.getName(), "£" + product.getCost(), product.getStock())
-//        );
-//        System.out.println(String.format("|%10s|%20s|%10s|%10s|", "", "", "", "").replace(" ", "-"));
-//        System.out.println();
+    private void displayProducts(Event e) {
+        if (e.getSource() instanceof Button && e.getSource() == btn_show_all) {
+            displayProducts(shop.getOrderedCatalogue());
+        }
+    }
+
+    /**
+     * TODO
+     * @param products
+     */
+    private void displayProducts(List<Product> products) {
+        Field[] fields = Product.class.getDeclaredFields();
+        String[] fieldNames = new String[fields.length];
+        for (int i = 0; i < fields.length; i++) {
+            fieldNames[i] = fields[i].toString();
+        }
+
+        fieldNames = Arrays.stream(fieldNames)
+                .map(field -> {
+                    String[] sub = field.split("\\.");
+                    return sub[sub.length - 1];
+                })
+                .toArray(String[]::new);
+
+        System.out.println(Arrays.toString(fieldNames));
+        ObservableList<TableColumn<Product, ?>> columns = table.getColumns();
+        for (int i = 0; i < columns.size(); i++) {
+            TableColumn<Product, ?> column = columns.get(i);
+            column.setCellValueFactory(new PropertyValueFactory<>(fieldNames[i]));
+        }
+
+        table.getItems().clear();
+        if (products != null) {
+            if (products.size() == 0) {
+                displayEmptyTable("No products to display");
+            } else {
+                table.getItems().addAll(products);
+            }
+        }
+    }
+
+    /**
+     * TODO
+     * @param emptyTableMessage
+     */
+    private void displayEmptyTable(String emptyTableMessage) {
+        table.getItems().clear();
+        table.setPlaceholder(new Label(emptyTableMessage));
     }
 
     /**
@@ -176,17 +251,20 @@ public class Menu extends Application {
      */
     @FXML
     private void findProduct(Event e) {
-//        int id = getIntInput(in,
-//                "Please enter the ID of the product you're looking for:",
-//                "You have not entered a valid ID. ID must be a whole positive number.",
-//                integer -> integer > 0
-//        );
-//        Product product = shop.findProduct(id);
-//        if (product == null) {
-//            System.out.println("The required product is not in the shop");
-//        } else {
-//            printProducts(List.of(product));
-//        }
+        String input = input_search.getText();
+        int id = 0;
+        try {
+            id = Integer.parseInt(input);
+        } catch (NumberFormatException numberFormatException) {
+            displayError(input_search, "ID is whole & positive");
+        }
+
+        Product product = shop.findProduct(id);
+        if (product == null) {
+            displayEmptyTable("There is no product with the given ID");
+        } else {
+            displayProducts(List.of(product));
+        }
     }
 
     /**
@@ -194,7 +272,7 @@ public class Menu extends Application {
      * TODO
      */
     @FXML
-    private void printTotalCost(Event e) {
+    private void displayTotalCost(Event e) {
         System.out.println("The total cost of products is £" + shop.getTotalCost());
     }
 
@@ -246,6 +324,7 @@ public class Menu extends Application {
         );
         product.decreaseStock(quantity);
     }
+
     /**
      * Gets input from the user for a Product ID and a quantity of how much they would like to increase the stock,
      * then increase the product's stock.
@@ -274,6 +353,13 @@ public class Menu extends Application {
                 integer -> integer > 0
         );
         product.increaseStock(quantity);
+    }
+    /**
+     * TODO
+     * @param source
+     * @param s
+     */
+    private void displayError(Object source, String s) {
     }
 
     /**
