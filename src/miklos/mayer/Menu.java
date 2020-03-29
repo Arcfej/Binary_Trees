@@ -1,17 +1,12 @@
 package miklos.mayer;
 
-import javafx.application.Application;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -23,7 +18,7 @@ import java.util.function.Predicate;
 /**
  * Represents a Menu for the shop-catalogue program.
  */
-public class Menu extends Application {
+public class Menu {
 
     // TODO comments
     private static final String ERROR_ID_INPUT = "ID >= 0";
@@ -85,36 +80,6 @@ public class Menu extends Application {
     }
 
     /**
-     * The entry point of the program. Displays the menu to the user in the first place.
-     *
-     * @param args the starting arguments of the program.
-     */
-    public static void main(String[] args) {
-        Menu menu = new Menu();
-//        menu.displayMenu();
-        Application.launch(Menu.class, args);
-    }
-
-    /**
-     * TODO
-     * @param primaryStage
-     * @throws Exception
-     */
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("menu.fxml"));
-        primaryStage.setTitle("Shop");
-        primaryStage.setX(0);
-        primaryStage.setY(0);
-        primaryStage.setMinWidth(778);
-        primaryStage.setMinHeight(300);
-        Scene scene = new Scene(root);
-        primaryStage.setScene(scene);
-
-        primaryStage.show();
-    }
-
-    /**
      * TODO
      */
     @FXML
@@ -145,12 +110,6 @@ public class Menu extends Application {
         totalCost = new SimpleFloatProperty();
         lbl_total_cost.textProperty().bind(totalCost.asString("£%s"));
         totalCost.set(shop.getTotalCost());
-    }
-
-    @Override
-    public void stop() throws Exception {
-        saveCatalogue();
-        super.stop();
     }
 
     /**
@@ -448,7 +407,7 @@ public class Menu extends Application {
     /**
      * Save the state of the catalogue into a txt file.
      */
-    private void saveCatalogue() {
+    public void saveCatalogue() {
         try (PrintWriter writer = new PrintWriter(new FileWriter("shop.txt"))) {
             for (Product product : shop.getCatalogueForSave()) {
                 writer.println(product.getId() + "," + product.getName() + "," + product.getCost() + "," + product.getStock());
@@ -471,12 +430,5 @@ public class Menu extends Application {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Reset the shop, delete all the products in it.
-     */
-    public void resetShop() {
-        shop = new Shop();
     }
 }
