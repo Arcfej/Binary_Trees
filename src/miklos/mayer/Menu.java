@@ -1,6 +1,9 @@
 package miklos.mayer;
 
 import javafx.application.Application;
+import javafx.beans.binding.FloatBinding;
+import javafx.beans.property.FloatProperty;
+import javafx.beans.property.SimpleFloatProperty;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -16,7 +19,6 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-import java.util.function.Predicate;
 
 /**
  * Represents a Menu for the shop-catalogue program.
@@ -39,6 +41,11 @@ public class Menu extends Application {
      * The shop of the program.
      */
     private Shop shop;
+
+    /**
+     * TODO
+     */
+    private FloatProperty totalCost;
 
     // TODO comments
     @FXML
@@ -105,8 +112,31 @@ public class Menu extends Application {
      */
     @FXML
     public void initialize() {
+        // Initialize table
+        Field[] fields = Product.class.getDeclaredFields();
+        String[] fieldNames = new String[fields.length];
+        for (int i = 0; i < fields.length; i++) {
+            fieldNames[i] = fields[i].toString();
+        }
+
+        fieldNames = Arrays.stream(fieldNames)
+                .map(field -> {
+                    String[] sub = field.split("\\.");
+                    return sub[sub.length - 1];
+                })
+                .toArray(String[]::new);
+
+        ObservableList<TableColumn<Product, ?>> columns = table.getColumns();
+        for (int i = 0; i < columns.size(); i++) {
+            TableColumn<Product, ?> column = columns.get(i);
+            column.setCellValueFactory(new PropertyValueFactory<>(fieldNames[i]));
+        }
         displayProducts(shop.getOrderedCatalogue());
-        displayTotalCost(null);
+
+        // Initialize total cost
+        totalCost = new SimpleFloatProperty();
+        lbl_total_cost.textProperty().bind(totalCost.asString("£%s"));
+        totalCost.set(shop.getTotalCost());
     }
 
     /**
@@ -206,26 +236,6 @@ public class Menu extends Application {
      * @param products
      */
     private void displayProducts(List<Product> products) {
-        Field[] fields = Product.class.getDeclaredFields();
-        String[] fieldNames = new String[fields.length];
-        for (int i = 0; i < fields.length; i++) {
-            fieldNames[i] = fields[i].toString();
-        }
-
-        fieldNames = Arrays.stream(fieldNames)
-                .map(field -> {
-                    String[] sub = field.split("\\.");
-                    return sub[sub.length - 1];
-                })
-                .toArray(String[]::new);
-
-        System.out.println(Arrays.toString(fieldNames));
-        ObservableList<TableColumn<Product, ?>> columns = table.getColumns();
-        for (int i = 0; i < columns.size(); i++) {
-            TableColumn<Product, ?> column = columns.get(i);
-            column.setCellValueFactory(new PropertyValueFactory<>(fieldNames[i]));
-        }
-
         table.getItems().clear();
         if (products != null) {
             if (products.size() == 0) {
@@ -252,18 +262,20 @@ public class Menu extends Application {
     @FXML
     private void findProduct(Event e) {
         String input = input_search.getText();
+        input_search.clear();
         int id = 0;
         try {
             id = Integer.parseInt(input);
-        } catch (NumberFormatException numberFormatException) {
-            displayError(input_search, "ID is whole & positive");
-        }
 
-        Product product = shop.findProduct(id);
-        if (product == null) {
-            displayEmptyTable("There is no product with the given ID");
-        } else {
-            displayProducts(List.of(product));
+            Product product = shop.findProduct(id);
+            if (product == null) {
+                displayEmptyTable("There is no product with the given ID");
+            } else {
+                displayProducts(List.of(product));
+                input_search.setPromptText("Product ID");
+            }
+        } catch (NumberFormatException numberFormatException) {
+            displayError(input_search, "ID is whole & positive number");
         }
     }
 
@@ -273,7 +285,7 @@ public class Menu extends Application {
      */
     @FXML
     private void displayTotalCost(Event e) {
-        System.out.println("The total cost of products is £" + shop.getTotalCost());
+        input_cost.setText("£" + shop.getTotalCost());
     }
 
     /**
@@ -301,28 +313,28 @@ public class Menu extends Application {
      * @param in The Scanner through the user communicates with the program
      */
     private void sellProduct(Scanner in) {
-        int id;
-        Product product;
-        while (true) {
-            id = getIntInput(in,
-                    "Please enter the ID of the product you've sold:",
-                    "You have not entered a valid ID. ID must be a whole positive number.",
-                    integer -> integer > 0
-            );
-            product = shop.findProduct(id);
-            if (product == null) {
-                System.out.println("The required product is not in the shop");
-            } else {
-                break;
-            }
-        }
-        final Product finalProduct = product;
-        int quantity = getIntInput(in,
-                "Please enter the quantity of the purchase:",
-                "Please enter a whole number between 1 and the stock of the product (" + finalProduct.getStock() + ")!",
-                integer -> integer > 0 && integer < finalProduct.getStock()
-        );
-        product.decreaseStock(quantity);
+//        int id;
+//        Product product;
+//        while (true) {
+//            id = getIntInput(in,
+//                    "Please enter the ID of the product you've sold:",
+//                    "You have not entered a valid ID. ID must be a whole positive number.",
+//                    integer -> integer > 0
+//            );
+//            product = shop.findProduct(id);
+//            if (product == null) {
+//                System.out.println("The required product is not in the shop");
+//            } else {
+//                break;
+//            }
+//        }
+//        final Product finalProduct = product;
+//        int quantity = getIntInput(in,
+//                "Please enter the quantity of the purchase:",
+//                "Please enter a whole number between 1 and the stock of the product (" + finalProduct.getStock() + ")!",
+//                integer -> integer > 0 && integer < finalProduct.getStock()
+//        );
+//        product.decreaseStock(quantity);
     }
 
     /**
@@ -332,113 +344,45 @@ public class Menu extends Application {
      * @param in The Scanner through the user communicates with the program
      */
     private void increaseStock(Scanner in) {
-        int id;
-        Product product;
-        while (true) {
-            id = getIntInput(in,
-                    "Please enter the ID of the product whose stock you increased:",
-                    "You have not entered a valid ID. ID must be a whole positive number.",
-                    integer -> integer > 0
-            );
-            product = shop.findProduct(id);
-            if (product == null) {
-                System.out.println("The required product is not in the shop");
-            } else {
-                break;
-            }
-        }
-        int quantity = getIntInput(in,
-                "Please enter the additional quantity of the product:",
-                "Please enter a whole number bigger than 0",
-                integer -> integer > 0
-        );
-        product.increaseStock(quantity);
+//        int id;
+//        Product product;
+//        while (true) {
+//            id = getIntInput(in,
+//                    "Please enter the ID of the product whose stock you increased:",
+//                    "You have not entered a valid ID. ID must be a whole positive number.",
+//                    integer -> integer > 0
+//            );
+//            product = shop.findProduct(id);
+//            if (product == null) {
+//                System.out.println("The required product is not in the shop");
+//            } else {
+//                break;
+//            }
+//        }
+//        int quantity = getIntInput(in,
+//                "Please enter the additional quantity of the product:",
+//                "Please enter a whole number bigger than 0",
+//                integer -> integer > 0
+//        );
+//        product.increaseStock(quantity);
     }
+
     /**
      * TODO
-     * @param source
-     * @param s
+     * @param target
+     * @param errorMessage
      */
-    private void displayError(Object source, String s) {
+    private void displayError(Labeled target, String errorMessage) {
+        target.setText(errorMessage);
     }
 
     /**
-     * Gets a validated String input from the user. Repeats the asking until the user provides a valid input.
-     *
-     * @param in The Scanner through the user communicates with the program
-     * @param question The text to display to the user before getting the input
-     * @param errorMessage The message to display to the user after a failed validation
-     * @param validation the condition for validation
-     * @return The validated input from the user.
+     * TODO
+     * @param target
+     * @param errorMessage
      */
-    private String getTextInput(Scanner in, String question, String errorMessage, Predicate<String> validation) {
-        String input;
-        while (true) {
-            System.out.println(question);
-            input = in.nextLine();
-            if (validation.test(input)) {
-                break;
-            } else {
-                System.out.println(errorMessage);
-            }
-        }
-        return input;
-    }
-
-    /**
-     * Gets a validated float input from the user. Repeats the asking until the user provides a valid input.
-     *
-     * @param in The Scanner through the user communicates with the program
-     * @param question The text to display to the user before getting the input
-     * @param errorMessage The message to display to the user after a failed validation
-     * @param validation the condition for validation
-     * @return The validated input from the user.
-     */
-    private float getFloatInput(Scanner in, String question, String errorMessage, Predicate<Float> validation) {
-        float input;
-        while (true) {
-            System.out.println(question);
-            try {
-                input = Float.parseFloat(in.nextLine());
-            } catch (NumberFormatException ignored) {
-                System.out.println(errorMessage);
-                continue;
-            }
-            if (validation.test(input)) {
-                break;
-            } else {
-                System.out.println(errorMessage);
-            }
-        }
-        return input;
-    }
-
-    /**
-     * Gets a validated integer input from the user. Repeats the asking until the user provides a valid input.
-     *
-     * @param in The Scanner through the user communicates with the program
-     * @param question The text to display to the user before getting the input
-     * @param errorMessage The message to display to the user after a failed validation
-     * @param validation the condition for validation
-     * @return The validated input from the user.
-     */
-    private int getIntInput(Scanner in, String question, String errorMessage, Predicate<Integer> validation) {
-        int input;
-        while (true) {
-            System.out.println(question);
-            try {
-                input = Integer.parseInt(in.nextLine());
-            } catch (NumberFormatException ignored) {
-                System.out.println(errorMessage);
-                continue;
-            }
-            if (validation.test(input)) {
-                break;
-            } else {
-                System.out.println(errorMessage);
-            }
-        }
-        return input;
+    private void displayError(TextInputControl target, String errorMessage) {
+        target.setPromptText(errorMessage);
     }
 
     /**

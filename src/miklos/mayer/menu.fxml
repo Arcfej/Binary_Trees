@@ -56,9 +56,9 @@
    </TableView>
    <HBox spacing="6.0">
       <VBox.margin>
-         <Insets bottom="6.0" left="6.0" right="6.0" top="6.0"/>
+         <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
       </VBox.margin>
-      <Label text="Total cost of the products:"/>
-      <Label fx:id="lbl_total_cost" text="£0"/>
+      <Label text="Total cost of the products:" />
+      <Label fx:id="lbl_total_cost" text="£0" />
    </HBox>
 </VBox>
