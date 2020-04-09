@@ -51,7 +51,7 @@
         <TableColumn prefWidth="75.0" text="ID" />
         <TableColumn prefWidth="75.0" style="width: auto;" text="Name" />
         <TableColumn prefWidth="75.0" text="Cost" />
-        <TableColumn prefWidth="75.0" text="Stock" />
+        <TableColumn fx:id="column_stock" prefWidth="75.0" text="Stock" />
      </columns>
    </TableView>
    <HBox spacing="6.0">

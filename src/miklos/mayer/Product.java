@@ -117,6 +117,15 @@ public class Product {
     }
 
     /**
+     * Setter of the stock level of the product
+     *
+     * @param stock the new stock level of the product
+     */
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
+    /**
      * Two Products are equals if all of their fields are equals.
      *
      * @param obj the other object to compare to

@@ -1,7 +1,10 @@
 package miklos.mayer;
 
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -26,18 +29,6 @@ public class Menu {
     private static final String ERROR_NAME_INPUT = "Name mustn't be blank";
     private static final String ERROR_COST_INPUT = "Cost >= 0";
     private static final String ERROR_QUANTITY_INPUT = "Quantity >= 0";
-
-    /**
-     * A list of eligible menu options for displaying purposes
-     */
-    public static final String MENU = "1) Add a new product to your shop\n" +
-            "2) Print shop catalogue\n" +
-            "3) Find product\n" +
-            "4) Print total cost of products\n" +
-            "5) Delete product\n" +
-            "6) Sell product from stock\n" +
-            "7) Increase stock\n" +
-            "0) Exit\n";
 
     /**
      * The shop of the program.
@@ -101,8 +92,60 @@ public class Menu {
         ObservableList<TableColumn<Product, ?>> columns = table.getColumns();
         for (int i = 0; i < columns.size(); i++) {
             TableColumn<Product, ?> column = columns.get(i);
-            column.setCellValueFactory(new PropertyValueFactory<>(fieldNames[i]));
+            if (column.getId() != null && column.getId().equals("column_stock")) {
+                TableColumn<Product, Void> columnStock = new TableColumn<>("Stock");
+                columnStock.setCellFactory(clmn -> new TableCell<>() {
+                    @Override
+                    protected void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            Product product = table.getItems().get(getIndex());
+                            Spinner<Integer> spinner = new Spinner<>(0, Integer.MAX_VALUE, product.getStock());
+                            spinner.setEditable(true);
+                            spinner.getStyleClass().add(Spinner.STYLE_CLASS_SPLIT_ARROWS_HORIZONTAL);
+                            spinner.setMaxWidth(90);
+
+                            spinner.valueProperty().addListener((observable, oldNum, newNum) -> {
+                                if (newNum >= 0) {
+                                    product.setStock(newNum);
+                                    totalCost.set(shop.getTotalCost());
+                                    saveCatalogue();
+                                }
+                            });
+
+                            setGraphic(spinner);
+                        }
+                    }
+                });
+                columns.set(i, columnStock);
+            } else {
+                column.setCellValueFactory(new PropertyValueFactory<>(fieldNames[i]));
+            }
         }
+
+        // Create the delete product column
+        TableColumn<Product, Void> deleteColumn = new TableColumn<>();
+        deleteColumn.setCellFactory(column -> new TableCell<>() {
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                Button btn = new Button("X");
+                // Delete on click
+                btn.setOnAction(actionEvent -> {
+                    Product product = table.getItems().get(getIndex());
+                    deleteProduct(product);
+                });
+                // Display the button
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(btn);
+                }
+            }
+        });
+        columns.add(deleteColumn);
 
         displayProducts(shop.getOrderedCatalogue());
 
@@ -110,53 +153,6 @@ public class Menu {
         totalCost = new SimpleFloatProperty();
         lbl_total_cost.textProperty().bind(totalCost.asString("£%s"));
         totalCost.set(shop.getTotalCost());
-    }
-
-    /**
-     * Displays the menu to the user and execute methods based on their choice.
-     * Save the catalogue after every modifications made to it.
-     */
-    public void displayMenu() {
-        Scanner in = new Scanner(System.in);
-        while (true) {
-            System.out.println(MENU);
-            // Get menu chose from the user
-            switch (in.nextLine()) {
-                case "0":
-                    System.out.println("Goodbye!");
-                    System.exit(1);
-                    saveCatalogue();
-                case "1":
-//                    addProduct(in);
-                    saveCatalogue();
-                    break;
-                case "2":
-                    List<Product> productList = shop.getOrderedCatalogue();
-//                    printProducts(productList);
-                    break;
-                case "3":
-//                    findProduct(in);
-                    break;
-                case "4":
-//                    printTotalCost();
-                    break;
-                case "5":
-//                    deleteProduct(in);
-                    saveCatalogue();
-                    break;
-                case "6":
-                    sellProduct(in);
-                    saveCatalogue();
-                    break;
-                case "7":
-                    increaseStock(in);
-                    saveCatalogue();
-                    break;
-                default:
-                    System.out.println("Not a valid command!");
-            }
-//            System.out.println(LINE_SEPARATOR);
-        }
     }
 
     /**
@@ -223,6 +219,7 @@ public class Menu {
                 input_quantity.setPromptText("");
                 displayProducts(shop.getOrderedCatalogue());
                 totalCost.set(shop.getTotalCost());
+                saveCatalogue();
             } catch (IllegalArgumentException exception) {
                 // There shouldn't be any error after the validation
                 System.out.println(exception.getMessage());
@@ -289,100 +286,15 @@ public class Menu {
     }
 
     /**
-     * Prints the total cost of all the Products in the catalogue.
-     * TODO
-     */
-    @FXML
-    private void displayTotalCost(Event e) {
-        input_cost.setText("£" + shop.getTotalCost());
-    }
-
-    /**
      * Gets input from the user for Product ID and delete it from the shop catalogue.
      * TODO
      */
     @FXML
-    private void deleteProduct(Event e) {
-//        int id = getIntInput(in,
-//                "Please enter the ID of the product you'd like to delete:",
-//                "You have not entered a valid ID. ID must be a whole positive number.",
-//                integer -> integer > 0
-//        );
-//        if (shop.deleteProduct(id)) {
-//            System.out.println("The product have been deleted successfully");
-//        } else {
-//            System.out.println("There is no product in the catalogue with this id.");
-//        }
-    }
-
-    /**
-     * Gets input from the user for a Product ID and a quantity of how much they has sold of it,
-     * then decrease the stock level in the catalogue.
-     *
-     * @param in The Scanner through the user communicates with the program
-     */
-    private void sellProduct(Scanner in) {
-//        int id;
-//        Product product;
-//        while (true) {
-//            id = getIntInput(in,
-//                    "Please enter the ID of the product you've sold:",
-//                    "You have not entered a valid ID. ID must be a whole positive number.",
-//                    integer -> integer > 0
-//            );
-//            product = shop.findProduct(id);
-//            if (product == null) {
-//                System.out.println("The required product is not in the shop");
-//            } else {
-//                break;
-//            }
-//        }
-//        final Product finalProduct = product;
-//        int quantity = getIntInput(in,
-//                "Please enter the quantity of the purchase:",
-//                "Please enter a whole number between 1 and the stock of the product (" + finalProduct.getStock() + ")!",
-//                integer -> integer > 0 && integer < finalProduct.getStock()
-//        );
-//        product.decreaseStock(quantity);
-    }
-
-    /**
-     * Gets input from the user for a Product ID and a quantity of how much they would like to increase the stock,
-     * then increase the product's stock.
-     *
-     * @param in The Scanner through the user communicates with the program
-     */
-    private void increaseStock(Scanner in) {
-//        int id;
-//        Product product;
-//        while (true) {
-//            id = getIntInput(in,
-//                    "Please enter the ID of the product whose stock you increased:",
-//                    "You have not entered a valid ID. ID must be a whole positive number.",
-//                    integer -> integer > 0
-//            );
-//            product = shop.findProduct(id);
-//            if (product == null) {
-//                System.out.println("The required product is not in the shop");
-//            } else {
-//                break;
-//            }
-//        }
-//        int quantity = getIntInput(in,
-//                "Please enter the additional quantity of the product:",
-//                "Please enter a whole number bigger than 0",
-//                integer -> integer > 0
-//        );
-//        product.increaseStock(quantity);
-    }
-
-    /**
-     * TODO
-     * @param target
-     * @param errorMessage
-     */
-    private void displayError(Labeled target, String errorMessage) {
-        target.setText(errorMessage);
+    private void deleteProduct(Product product) {
+        shop.deleteProduct(product.getId());
+        displayProducts(shop.getOrderedCatalogue());
+        totalCost.set(shop.getTotalCost());
+        saveCatalogue();
     }
 
     /**
@@ -393,15 +305,6 @@ public class Menu {
     private void displayError(TextInputControl target, String errorMessage) {
         target.clear();
         target.setPromptText(errorMessage);
-    }
-
-    /**
-     * Getter of the shop object.
-     *
-     * @return the shop object.
-     */
-    public Shop getShop() {
-        return shop;
     }
 
     /**
