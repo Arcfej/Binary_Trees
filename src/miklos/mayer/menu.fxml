@@ -46,7 +46,7 @@
          <Insets bottom="6.0" left="6.0" right="6.0" />
       </VBox.margin>
    </HBox>
-   <TableView fx:id="table" editable="true">
+   <TableView fx:id="table" editable="true" VBox.vgrow="ALWAYS">
      <columns>
         <TableColumn prefWidth="75.0" text="ID" />
         <TableColumn prefWidth="75.0" style="width: auto;" text="Name" />
