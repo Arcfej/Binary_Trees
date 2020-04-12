@@ -7,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * TODO
+ * This class is responsible to start the application
  */
 public class Starter extends Application {
 
@@ -23,9 +23,10 @@ public class Starter extends Application {
     }
 
     /**
-     * TODO
-     * @param primaryStage
-     * @throws Exception
+     * Initialize the user interface
+     *
+     * @param primaryStage the stage to set the user interface upon
+     * @throws Exception if any problem occurs, throw it back to the main method
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -43,8 +44,10 @@ public class Starter extends Application {
     }
 
     /**
-     * TODO
-     * @throws Exception
+     * The last method to call before the application terminates.
+     * Save the database
+     *
+     * @throws Exception if any problem occurs, throw it back to the main method
      */
     @Override
     public void stop() throws Exception {

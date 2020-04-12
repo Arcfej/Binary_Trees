@@ -1,10 +1,7 @@
 package miklos.mayer;
 
-import javafx.beans.InvalidationListener;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleFloatProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -19,46 +16,90 @@ import java.util.Scanner;
 import java.util.function.Predicate;
 
 /**
- * Represents a Menu for the shop-catalogue program.
+ * Represents the main user interface for the shop-catalogue program.
  */
 public class Menu {
 
-    // TODO comments
-    private static final String ERROR_ID_INPUT = "ID >= 0";
+    /**
+     * Error message to display when the id input is invalid
+     */
+    private static final String ERROR_ID_INPUT = "ID > 0";
+
+    /**
+     * Error message to display when the given id is already exist
+     */
     private static final String ERROR_ID_TAKEN = "ID already taken";
+
+    /**
+     * Error message to display when the name field remained empty
+     */
     private static final String ERROR_NAME_INPUT = "Name mustn't be blank";
-    private static final String ERROR_COST_INPUT = "Cost >= 0";
-    private static final String ERROR_QUANTITY_INPUT = "Quantity >= 0";
+
+    /**
+     * Error message to display when the cost input is invalid
+     */
+    private static final String ERROR_COST_INPUT = "Cost > 0";
+
+    /**
+     * Error message to display when the quantity input is invalid.
+     */
+    private static final String ERROR_QUANTITY_INPUT = "Quan.>=0";
 
     /**
      * The shop of the program.
      */
-    private Shop shop;
+    private final Shop shop;
 
     /**
-     * TODO
+     * The property which holds the value of the products' total cost.
      */
     private FloatProperty totalCost;
 
-    // TODO comments
+    /**
+     * The table in which the products displayed
+     */
     @FXML
     private TableView<Product> table;
+
+    /**
+     * The button which can show all products
+     */
     @FXML
     private Button btn_show_all;
-    @FXML
-    private Button btn_search;
+
+    /**
+     * Input field for searching products
+     */
     @FXML
     private TextField input_search;
+
+    /**
+     * Input field for an id of a new product
+     */
     @FXML
     private TextField input_id;
+
+    /**
+     * Input field for a name for a nuw product
+     */
     @FXML
     private TextField input_name;
+
+    /**
+     * Input field for the cost of a new product
+     */
     @FXML
     private TextField input_cost;
+
+    /**
+     * Input field for the initial stock level of a new product
+     */
     @FXML
     private TextField input_quantity;
-    @FXML
-    private Button btn_add;
+
+    /**
+     * Label to display the total cost of the products
+     */
     @FXML
     private Label lbl_total_cost;
 
@@ -71,7 +112,7 @@ public class Menu {
     }
 
     /**
-     * TODO
+     * Called when the stage is initialized. Initialize all the Nodes
      */
     @FXML
     public void initialize() {
@@ -93,6 +134,7 @@ public class Menu {
         for (int i = 0; i < columns.size(); i++) {
             TableColumn<Product, ?> column = columns.get(i);
             if (column.getId() != null && column.getId().equals("column_stock")) {
+                // Custom column for stock levels with spinner to edit it
                 TableColumn<Product, Void> columnStock = new TableColumn<>("Stock");
                 columnStock.setCellFactory(clmn -> new TableCell<>() {
                     @Override
@@ -125,7 +167,7 @@ public class Menu {
             }
         }
 
-        // Create the delete product column
+        // Create the delete product column with delete button
         TableColumn<Product, Void> deleteColumn = new TableColumn<>();
         deleteColumn.setCellFactory(column -> new TableCell<>() {
             @Override
@@ -149,7 +191,7 @@ public class Menu {
 
         displayProducts(shop.getOrderedCatalogue());
 
-        // Initialize total cost
+        // Initialize total cost displaying
         totalCost = new SimpleFloatProperty();
         lbl_total_cost.textProperty().bind(totalCost.asString("£%s"));
         totalCost.set(shop.getTotalCost());
@@ -157,7 +199,8 @@ public class Menu {
 
     /**
      * Takes input from the user for a new product, validates it and add it to the shop.
-     * TODO
+     *
+     * @param e The event which called this method
      */
     @FXML
     public void addProduct(Event e) {
@@ -169,12 +212,13 @@ public class Menu {
 
         Predicate<Integer> idValidation = i -> i > 0 && !shop.containsId(i);
         Predicate<String> nameValidation = s -> !s.isBlank();
-        Predicate<Float> costValidation = f -> f >= 0;
+        Predicate<Float> costValidation = f -> f > 0;
         Predicate<Integer> quantityValidation = i -> i >= 0;
 
+        // Get id
         try {
             id = Integer.parseInt(input_id.getText());
-            if (id < 0) {
+            if (!idValidation.test(id)) {
                 displayError(input_id, ERROR_ID_INPUT);
             } else if (shop.containsId(id)) {
                 displayError(input_id, ERROR_ID_TAKEN);
@@ -183,11 +227,13 @@ public class Menu {
             displayError(input_id, ERROR_ID_INPUT);
         }
 
+        // Get name
         name = input_name.getText();
         if (!nameValidation.test(name)) {
             displayError(input_name, ERROR_NAME_INPUT);
         }
 
+        // Get cost
         try {
             cost = Float.parseFloat(input_cost.getText());
             if (!costValidation.test(cost)) {
@@ -197,6 +243,7 @@ public class Menu {
             displayError(input_cost, ERROR_COST_INPUT);
         }
 
+        // Get initial stock level
         try {
             quantity = Integer.parseInt(input_quantity.getText());
             if (!quantityValidation.test(quantity)) {
@@ -206,6 +253,7 @@ public class Menu {
             displayError(input_quantity, ERROR_QUANTITY_INPUT);
         }
 
+        // If all the inputs are valid, add the new product
         if (idValidation.test(id) && nameValidation.test(name) && costValidation.test(cost) && quantityValidation.test(quantity)) {
             try {
                 shop.addNewProduct(id, name, cost, quantity);
@@ -229,7 +277,8 @@ public class Menu {
 
     /**
      * Prints a list of products to the screen.
-     * TODO
+     *
+     * @param e The event which called this method
      */
     @FXML
     private void displayProducts(Event e) {
@@ -239,8 +288,9 @@ public class Menu {
     }
 
     /**
-     * TODO
-     * @param products
+     * Prints a list of products in the table
+     *
+     * @param products The list of products to display
      */
     private void displayProducts(List<Product> products) {
         table.getItems().clear();
@@ -254,8 +304,9 @@ public class Menu {
     }
 
     /**
-     * TODO
-     * @param emptyTableMessage
+     * Displays an empty table to the user with the given message
+     *
+     * @param emptyTableMessage The empty message to display
      */
     private void displayEmptyTable(String emptyTableMessage) {
         table.getItems().clear();
@@ -263,8 +314,9 @@ public class Menu {
     }
 
     /**
-     * Gets input from the user for a Product ID, search for it in the catalogue and print it to the user.
-     * TODO
+     * Gets input from the user for a Product ID, search for it in the catalogue and display it in the table.
+     *
+     * @param e The event which called this method
      */
     @FXML
     private void findProduct(Event e) {
@@ -272,6 +324,9 @@ public class Menu {
         int id = 0;
         try {
             id = Integer.parseInt(input);
+            if (id <= 0) {
+                throw new NumberFormatException();
+            }
             input_search.clear();
             input_search.setPromptText("Product ID");
             Product product = shop.findProduct(id);
@@ -286,8 +341,9 @@ public class Menu {
     }
 
     /**
-     * Gets input from the user for Product ID and delete it from the shop catalogue.
-     * TODO
+     * Delete a product from the shop's catalogue
+     *
+     * @param product The product to delete.
      */
     @FXML
     private void deleteProduct(Product product) {
@@ -298,9 +354,10 @@ public class Menu {
     }
 
     /**
-     * TODO
-     * @param target
-     * @param errorMessage
+     * Displays an error to the user.
+     *
+     * @param target The area where the message should be displayed.
+     * @param errorMessage The message to display
      */
     private void displayError(TextInputControl target, String errorMessage) {
         target.clear();
